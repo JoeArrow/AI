@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Practical.AI.Reinforcement_Learning.Maze
 {
@@ -25,10 +23,13 @@ namespace Practical.AI.Reinforcement_Learning.Maze
         {
             X = x;
             Y = y;
+
             Randomness = randomness;
             InitQTable(n, m);
+
             _n = n;
             _m = m;
+
             Reward = reward;
             _map = map;
             _discountFactor = discountFactor;

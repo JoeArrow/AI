@@ -75,23 +75,23 @@ namespace Practical.AI.Reinforcement_Learning.Maze
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if (!_stopWatch.IsRunning)
-                _stopWatch.Start();
-            if (_agent.X != _n - 1 || _agent.Y != _m - 1)
-                _agent.QLearning(_episode < 20);
+            if(!_stopWatch.IsRunning) { _stopWatch.Start(); }
+            if(_agent.X != _n - 1 || _agent.Y != _m - 1) { _agent.QLearning(_episode < 20); }
             else
             {
                 _agent.QTable[new Tuple<int, int>(_n - 1, _m - 1)] = new List<double>
-                                                                         {
-                                                                             _agent.Reward[_n - 1, _m - 1],
-                                                                             _agent.Reward[_n - 1, _m - 1],
-                                                                             _agent.Reward[_n - 1, _m - 1],
-                                                                             _agent.Reward[_n - 1, _m - 1]
-                                                                         };
+                {
+                    _agent.Reward[_n - 1, _m - 1],
+                    _agent.Reward[_n - 1, _m - 1],
+                    _agent.Reward[_n - 1, _m - 1],
+                    _agent.Reward[_n - 1, _m - 1]
+                };
+
                 _stopWatch.Stop();
                 _agent.Reset();
-                
-                var file = new StreamWriter("E:/time_difference.txt", true);
+
+                var path = Path.GetDirectoryName(Application.ExecutablePath);
+                var file = new StreamWriter($@"{path}\time_difference.txt", true);
                 file.WriteLine(_stopWatch.ElapsedMilliseconds);
                 file.Close();
 

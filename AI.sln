@@ -1,11 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practical.AI", "Practical.AI\Practical.AI.csproj", "{17ACC5D3-5182-41F2-9358-B2A2919E5D6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentService", "AgentService\AgentService.csproj", "{4C174FE5-5540-4CCB-B9CE-20E9933635C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentClient", "AgentClient\AgentClient.csproj", "{A0F4A13B-2463-446F-B9BF-35D2A5E30155}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{C93A5C00-6534-42B4-A588-C9213EA0F93C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practical.AI.UnitTests", "Practical.AI.UnitTests\Practical.AI.UnitTests.csproj", "{7B642DA7-BE09-4D50-9F10-19713DB941C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +34,10 @@ Global
 		{A0F4A13B-2463-446F-B9BF-35D2A5E30155}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0F4A13B-2463-446F-B9BF-35D2A5E30155}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0F4A13B-2463-446F-B9BF-35D2A5E30155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B642DA7-BE09-4D50-9F10-19713DB941C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B642DA7-BE09-4D50-9F10-19713DB941C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B642DA7-BE09-4D50-9F10-19713DB941C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B642DA7-BE09-4D50-9F10-19713DB941C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

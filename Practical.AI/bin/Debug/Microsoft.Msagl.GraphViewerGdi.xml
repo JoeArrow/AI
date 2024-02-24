@@ -117,6 +117,32 @@
             calculates the rendered rectangle and RenderedBox to it
             </summary>
         </member>
+        <member name="T:Microsoft.Msagl.GraphViewerGdi.DGraph">
+            <summary>
+            This yet another graph is needed to hold additional GDI specific data for drawing.
+            It has a pointer to Microsoft.Msagl.Drawing.Graph and Microsoft.Msagl.Graph.
+            It is passed to the drawing routine
+            </summary>
+        </member>
+        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.UpdateRenderedBox">
+            <summary>
+            calculates the rendered rectangle and RenderedBox to it
+            </summary>
+        </member>
+        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.CreateDGraphFromPrecalculatedDrawingGraph(Microsoft.Msagl.Drawing.Graph,Microsoft.Msagl.GraphViewerGdi.GViewer)">
+            <summary>
+            creates DGraph from a precalculated drawing graph
+            </summary>
+            <param name="drawingGraph"></param>
+            <param name="viewer">the owning viewer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.Nodes">
+            <summary>
+            yields the nodes
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Microsoft.Msagl.GraphViewerGdi.DLabel">
             <summary>
             A class representing a drawn label
@@ -159,85 +185,6 @@
             <summary>
             calculates the rendered rectangle and RenderedBox to it
             </summary>
-        </member>
-        <member name="T:Microsoft.Msagl.GraphViewerGdi.DGraph">
-            <summary>
-            This yet another graph is needed to hold additional GDI specific data for drawing.
-            It has a pointer to Microsoft.Msagl.Drawing.Graph and Microsoft.Msagl.Graph.
-            It is passed to the drawing routine
-            </summary>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.UpdateRenderedBox">
-            <summary>
-            calculates the rendered rectangle and RenderedBox to it
-            </summary>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.CreateDGraphFromPrecalculatedDrawingGraph(Microsoft.Msagl.Drawing.Graph,Microsoft.Msagl.GraphViewerGdi.GViewer)">
-            <summary>
-            creates DGraph from a precalculated drawing graph
-            </summary>
-            <param name="drawingGraph"></param>
-            <param name="viewer">the owning viewer</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DGraph.Nodes">
-            <summary>
-            yields the nodes
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph">
-            <summary>
-            draws curved for debugging purpoposes
-            </summary>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowGraph(Microsoft.Msagl.Core.Layout.GeometryGraph)">
-            <summary>
-            </summary>
-            <param name="geomGraph"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.BindGeomGraphToDrawingGraph(Microsoft.Msagl.Drawing.Graph,Microsoft.Msagl.Core.Layout.GeometryGraph)">
-            <summary>
-            </summary>
-            <param name="graph"></param>
-            <param name="geomGraph"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowCurves(Microsoft.Msagl.Core.Geometry.Curves.ICurve[])">
-            <summary>
-            displays an array of curves
-            </summary>
-            <param name="curves"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowCurvesWithColors(System.Collections.Generic.IEnumerable{Microsoft.Msagl.Core.Geometry.Curves.ICurve},System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            display colorored curves
-            </summary>
-            <param name="curves"></param>
-            <param name="colors"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowDataBase(Microsoft.Msagl.Layout.Layered.Database,Microsoft.Msagl.Core.Geometry.Curves.ICurve[])">
-            <summary>
-            displays the database
-            </summary>
-            <param name="db"></param>
-            <param name="curves"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.SetShowFunctions">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowDebugCurves(Microsoft.Msagl.DebugHelpers.DebugCurve[])">
-            <summary>
-            
-            </summary>
-            <param name="debugCurves"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.DisplayGeometryGraph.ShowDebugCurvesEnumerationOnForm(System.Collections.Generic.IEnumerable{Microsoft.Msagl.DebugHelpers.DebugCurve},System.Windows.Forms.Form)">
-            <summary>
-            </summary>
-            <param name="debugCurves"></param>
-            <param name="f"></param>
         </member>
         <member name="T:Microsoft.Msagl.GraphViewerGdi.DNode">
             <summary>
@@ -345,12 +292,12 @@
             this is the bounding box with which the object was rendered the last time
             </summary>
         </member>
-        <member name="E:Microsoft.Msagl.GraphViewerGdi.DObject.MarkedForDraggingEvent">
+        <member name="E:Microsoft.Msagl.GraphViewerGdi.DObject.MarkForDraggingEvent">
             <summary>
             raised when the entity is marked for dragging
             </summary>
         </member>
-        <member name="E:Microsoft.Msagl.GraphViewerGdi.DObject.UnmarkedForDraggingEvent">
+        <member name="E:Microsoft.Msagl.GraphViewerGdi.DObject.UnmarkForDraggingEvent">
             <summary>
             raised when the entity is unmarked for dragging
             </summary>
@@ -890,13 +837,6 @@
             Pans the view by vector point
             </summary>
             <param name="point"></param>
-        </member>
-        <member name="M:Microsoft.Msagl.GraphViewerGdi.GViewer.CenterToPoint(System.Double,System.Double)">
-            <summary>
-            centers the view to the point (x,y)
-            </summary>
-            <param name="x"></param>
-            <param name="y"></param>
         </member>
         <member name="M:Microsoft.Msagl.GraphViewerGdi.GViewer.CenterToPoint(Microsoft.Msagl.Core.Geometry.Point)">
             <summary>

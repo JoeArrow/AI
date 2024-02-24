@@ -1233,7 +1233,7 @@
 </member>
 <member name="M:FParsec.CharParsers.unicodeSpaces``1">
 <summary>
- Skips over any sequence of *one* or more unicode whitespaces and
+ Skips over any sequence of *zero* or more unicode whitespaces and
  registers any unicode newline (&quot;\n&quot;, &quot;\r\n&quot;, &quot;\r&quot;, &quot;\u0085, &quot;\u000C&quot;,
  &quot;\u2028&quot;or &quot;\u2029&quot;) as a newline.
 </summary>

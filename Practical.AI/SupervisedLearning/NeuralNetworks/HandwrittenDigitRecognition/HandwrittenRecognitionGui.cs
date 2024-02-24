@@ -144,6 +144,7 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
                         fileWeights.WriteLine(w);
                     fileWeights.WriteLine("*");
                 }
+
                 fileWeights.WriteLine("-");
             }
 

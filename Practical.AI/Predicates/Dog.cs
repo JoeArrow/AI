@@ -20,7 +20,9 @@ namespace Practical.AI.Predicates
         }
     }
 
-    public enum Gender {
-         Male, Female
+    public enum Gender
+    {
+        Male, 
+        Female
     }
 }

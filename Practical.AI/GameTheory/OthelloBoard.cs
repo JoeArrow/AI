@@ -23,16 +23,7 @@ namespace Practical.AI.GameTheory
             Board = new int[n, m];
             Turn = 1;
             Flips = new Dictionary<Tuple<int, int>, List<Tuple<int, int>>>();
-            //Player1Pos = new List<Tuple<int, int>>
-            //                  {
-            //                      new Tuple<int, int>(n / 2 - 1, m / 2),
-            //                      new Tuple<int, int>(n / 2, m / 2 - 1)
-            //                  };
-            //Player2Pos = new List<Tuple<int, int>>
-            //                  {
-            //                      new Tuple<int, int>(n / 2 - 1, m / 2 - 1),
-            //                      new Tuple<int, int>(n / 2, m / 2)
-            //                  };
+
             Player1Pos = new List<Tuple<int, int>>
                               {
                                   new Tuple<int, int>(3, 4),
@@ -51,10 +42,7 @@ namespace Practical.AI.GameTheory
                               };
 
             // Initial Positions
-            //Board[n / 2 - 1, m / 2 - 1] = 2;
-            //Board[n / 2, m / 2] = 2;
-            //Board[n / 2 - 1, m / 2] = 1;
-            //Board[n / 2, m / 2 - 1] = 1;
+
             Board[3, 3] = 2;
             Board[3, 5] = 2;
             Board[1, 3] = 2; 

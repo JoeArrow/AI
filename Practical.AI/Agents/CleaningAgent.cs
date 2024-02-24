@@ -1,33 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Practical.AI.Agents
 {
     public class CleaningAgent
     {
-        private readonly int[,] _terrain;
-        private static Stopwatch _stopwatch;
         public int X { get; set; }
         public int Y { get; set; }
+        private readonly int[,] _terrain;
+        private static Stopwatch _stopwatch;
         public bool TaskFinished { get; set; }
-        // Internal data structure for keeping state
-        private List<Tuple<int, int>> _cleanedCells;
+        public bool _expired = false;
         private Random _random;
+
+        // -----------------------------------------
+        // Internal data structure for keeping state
+        
+        private List<Tuple<int, int>> _cleanedCells;
+
+        // ------------------------------------------------
+        //                                      Constructor
 
         public CleaningAgent(int [,] terrain, int x, int y)
         {
             X = x;
             Y = y;
+
             _terrain = new int[terrain.GetLength(0), terrain.GetLength(1)];
             Array.Copy(terrain, _terrain, terrain.GetLength(0) * terrain.GetLength(1));
+
             _stopwatch = new Stopwatch();
             _cleanedCells = new List<Tuple<int, int>>();
             _random = new Random();
         }
+
+        // ------------------------------------------------
+        //                                            Start
 
         public void Start(int miliseconds)
         {
@@ -36,130 +45,165 @@ namespace Practical.AI.Agents
             do
             {
                 Action(Perceived());
+                _expired = _stopwatch.ElapsedMilliseconds > miliseconds;
             }
             while (!TaskFinished && !(_stopwatch.ElapsedMilliseconds > miliseconds));
+
+            _stopwatch.Stop();
         }
+
+        // ------------------------------------------------
+        //                                      UpdateState
 
         private void UpdateState()
         {
-            if (!_cleanedCells.Contains(new Tuple<int, int>(X, Y)))
-                _cleanedCells.Add(new Tuple<int, int>(X, Y));
+            var room = new Tuple<int, int>(X, Y);
+
+            if(!_cleanedCells.Contains(room)) 
+            { 
+                _cleanedCells.Add(room); 
+            }
         }
 
-        // Function
+        // ------------------------------------------------
+        //                                   Function Clean
+
         public void Clean()
         {
-            _terrain[X, Y] -= 1;
+            // ---------------------------
+            // Once we enter a dirty room,
+            // clean the room completely
+
+            while(_terrain[X, Y] > 0) { _terrain[X, Y] -= 1; }
         }
 
-        // Predicate
+        // ------------------------------------------------
+        //                                Predicate IsDirty
+
         public bool IsDirty()
         {
             return _terrain[X, Y] > 0;
         }
 
-        public void Action(List<P> percepts)
+        // ------------------------------------------------
+        //                                           Action
+
+        public void Action(List<Percepts> percepts)
         {
-            if (percepts.Contains(P.Clean))
-                UpdateState();
-            if (percepts.Contains(P.Dirty))
-                Clean();
-            else if (percepts.Contains(P.Finished))
-                TaskFinished = true;
-            else if (percepts.Contains(P.MoveUp) && !_cleanedCells.Contains(new Tuple<int, int>(X - 1, Y)))
-                Move(P.MoveUp);
-            else if (percepts.Contains(P.MoveDown) && !_cleanedCells.Contains(new Tuple<int, int>(X + 1, Y)))
-                Move(P.MoveDown);
-            else if (percepts.Contains(P.MoveLeft) && !_cleanedCells.Contains(new Tuple<int, int>(X, Y - 1)))
-                Move(P.MoveLeft);
-            else if (percepts.Contains(P.MoveRight) && !_cleanedCells.Contains(new Tuple<int, int>(X, Y + 1)))
-                Move(P.MoveRight);
-            else
-                RandomAction(percepts);
+            if(percepts.Contains(Percepts.Clean)) { UpdateState(); }
+
+            if(percepts.Contains(Percepts.Dirty)) { Clean(); }
+            else if(percepts.Contains(Percepts.Finished)) { TaskFinished = true; }
+            else if(percepts.Contains(Percepts.MoveUp) && !_cleanedCells.Contains(new Tuple<int, int>(X - 1, Y))) { Move(Percepts.MoveUp); }
+            else if(percepts.Contains(Percepts.MoveDown) && !_cleanedCells.Contains(new Tuple<int, int>(X + 1, Y))) { Move(Percepts.MoveDown); }
+            else if(percepts.Contains(Percepts.MoveLeft) && !_cleanedCells.Contains(new Tuple<int, int>(X, Y - 1))) { Move(Percepts.MoveLeft); }
+            else if(percepts.Contains(Percepts.MoveRight) && !_cleanedCells.Contains(new Tuple<int, int>(X, Y + 1))) { Move(Percepts.MoveRight); }
+            else { RandomAction(percepts); }
         }
 
-        private void RandomAction(List<P> percepts)
+        // ------------------------------------------------
+        //                                     RandomAction
+
+        private void RandomAction(List<Percepts> perceptions)
         {
-            var p = percepts[_random.Next(1, percepts.Count)];
-            Move(p);
+            var perception = perceptions[_random.Next(1, perceptions.Count)];
+            Move(perception);
         }
 
-        private void Move(P p)
+        // ------------------------------------------------
+        //                                             Move
+
+        private void Move(Percepts p)
         {
             switch (p)
             {
-                case P.MoveUp:
+                case Percepts.MoveUp:
                     X -= 1;
                     break;
-                case P.MoveDown:
+
+                case Percepts.MoveDown:
                     X += 1;
                     break;
-                case P.MoveLeft:
+
+                case Percepts.MoveLeft:
                     Y -= 1;
                     break;
-                case P.MoveRight:
+
+                case Percepts.MoveRight:
                     Y += 1;
                     break;
             }
         }
 
-        // Function
-        private List<P> Perceived()
+        // ------------------------------------------------
+        //                               Function Perceived
+
+        private List<Percepts> Perceived()
         {
-            var result = new List<P>();
+            var retVal = new List<Percepts>();
 
-            if (IsDirty())
-                result.Add(P.Dirty);
-            else
-                result.Add(P.Clean);
+            if(IsDirty()) { retVal.Add(Percepts.Dirty); }
+            else { retVal.Add(Percepts.Clean); }
 
-            if (_cleanedCells.Count == _terrain.GetLength(0) * _terrain.GetLength(1))
-                result.Add(P.Finished); 
+            if(_cleanedCells.Count == _terrain.GetLength(0) * _terrain.GetLength(1)) { retVal.Add(Percepts.Finished); }
 
-            if (MoveAvailable(X - 1, Y))
-                result.Add(P.MoveUp);
-
-            if (MoveAvailable(X + 1, Y))
-                result.Add(P.MoveDown);
+            if(MoveAvailable(X - 1, Y)) { retVal.Add(Percepts.MoveUp); }
+            if(MoveAvailable(X + 1, Y)) { retVal.Add(Percepts.MoveDown); }
+            if(MoveAvailable(X, Y - 1)) { retVal.Add(Percepts.MoveLeft); }
+            if(MoveAvailable(X, Y + 1)) { retVal.Add(Percepts.MoveRight); }
             
-            if (MoveAvailable(X, Y - 1))
-                result.Add(P.MoveLeft);
-            
-            if (MoveAvailable(X, Y + 1))
-                result.Add(P.MoveRight);
-            
-            return result;
+            return retVal;
         }
 
-        // Predicate
+        // ------------------------------------------------
+        //                          Predicate MoveAvailable
+
         public bool MoveAvailable(int x, int y)
         {
             return x >= 0 && y >= 0 && x < _terrain.GetLength(0) && y < _terrain.GetLength(1);
         }
 
+        // ------------------------------------------------
+        //                                            Print
+
         public void Print()
         {
-            var col = _terrain.GetLength(1);
             var i = 0;
-            var line = "";
-            Console.WriteLine("--------------");
+            var line = string.Empty;
+            var col = _terrain.GetLength(1);
+
+            var width = _terrain.GetLength(1) * 7;
+
+            Console.WriteLine(new string('=', width));
+            Console.WriteLine($"{new string(' ', (width / 2) - 2)}{_stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"Alloted time expired: {_expired}");
+            Console.WriteLine(new string('-', width));
+
             foreach (var c in _terrain)
             {
-                line += string.Format("  {0}  ", c);
+                line += string.Format("  {0,3}  ", c);
                 i++;
+
                 if (col == i)
                 {
                     Console.WriteLine(line);
-                    line = "";
+                    line = string.Empty;
                     i = 0;
                 }
             }
         }
     }
 
-    public enum P
-    {
-        Dirty, Clean, Finished, MoveUp, MoveDown, MoveLeft, MoveRight  
-    }
+    // ------------------------------------------------
 
+    public enum Percepts
+    {
+        Dirty, 
+        Clean, 
+        Finished,
+        MoveUp, 
+        MoveDown, 
+        MoveLeft, 
+        MoveRight  
+    }
 }

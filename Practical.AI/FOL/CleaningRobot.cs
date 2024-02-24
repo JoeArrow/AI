@@ -1,29 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Practical.AI.FOL
 {
     public class CleaningRobot
     {
-        private readonly int[,] _terrain;
-        private static Stopwatch _stopwatch;
         public int X { get; set; }
         public int Y { get; set; }
         private static Random _random;
+        private readonly int[,] _terrain;
+        private static Stopwatch _stopwatch;
 
-        public CleaningRobot(int [,] terrain, int x, int y)
+        // ------------------------------------------------
+
+        public CleaningRobot(int[,] terrain, int x, int y)
         {
             X = x;
             Y = y;
+
             _terrain = new int[terrain.GetLength(0), terrain.GetLength(1)];
             Array.Copy(terrain, _terrain, terrain.GetLength(0) * terrain.GetLength(1));
+
             _stopwatch = new Stopwatch();
             _random = new Random();
         }
+
+        // ------------------------------------------------
 
         public void Start(int miliseconds)
         {
@@ -31,85 +34,110 @@ namespace Practical.AI.FOL
 
             do
             {
-                if (IsDirty())
+                if(IsDirty())
+                {
                     Clean();
+                }
                 else
+                {
                     Move(SelectMove());
+                }
 
-            } while (!IsTerrainClean() && !(_stopwatch.ElapsedMilliseconds > miliseconds));
+            } while(!IsTerrainClean() && !(_stopwatch.ElapsedMilliseconds > miliseconds));
         }
 
-        // Function
+        // ------------------------------------------------
+        //                              Function SelectMove
+
         private Direction SelectMove()
         {
             var list = new List<Direction> { Direction.Down, Direction.Up, Direction.Right, Direction.Left };
             return list[_random.Next(0, list.Count)];
         }
 
-        // Function
+        // ------------------------------------------------
+        //                                   Function Clean
+
         public void Clean()
         {
             _terrain[X, Y] -= 1;
         }
 
-        // Predicate
+        // ------------------------------------------------
+        //                                Predicate IsDirty
+
         public bool IsDirty()
         {
             return _terrain[X, Y] > 0;
         }
 
-        // Function
+        // ------------------------------------------------
+        //                                    Function Move
+
         private void Move(Direction m)
         {
-            switch (m)
+            switch(m)
             {
                 case Direction.Up:
-                    if (MoveAvailable(X - 1, Y))
-                        X -= 1;
-                        break;
+                    if(MoveAvailable(X - 1, Y)) { X -= 1; }
+                    break;
+
                 case Direction.Down:
-                    if (MoveAvailable(X + 1, Y))
-                        X += 1;
-                        break;
+                    if(MoveAvailable(X + 1, Y)) { X += 1; }
+                    break;
+
                 case Direction.Left:
-                        if (MoveAvailable(X, Y - 1))
-                            Y -= 1;
-                        break;
+                    if(MoveAvailable(X, Y - 1)) { Y -= 1; }
+                    break;
+
                 case Direction.Right:
-                        if (MoveAvailable(X, Y + 1))
-                            Y += 1;
-                        break;
+                    if(MoveAvailable(X, Y + 1)) { Y += 1; }
+                    break;
             }
         }
 
-        // Predicate
+        // ------------------------------------------------
+        //                          Predicate MoveAvailable
+
         public bool MoveAvailable(int x, int y)
         {
             return x >= 0 && y >= 0 && x < _terrain.GetLength(0) && y < _terrain.GetLength(1);
         }
 
-        // Predicate
+        // ------------------------------------------------
+        //                         Predicate IsTerrainClean
+
         public bool IsTerrainClean()
         {
-            // For all cell in terrain; cell equals 0
-            foreach (var c in _terrain)
-                if (c > 0)
+            // ---------------------------------------
+            // For all cells in terrain; cell equals 0
+
+            foreach(var c in _terrain)
+            {
+                if(c > 0)
+                {
                     return false;
+                }
+            }
 
             return true;
         }
 
+        // ------------------------------------------------
+
         public void Print()
         {
-            var col = _terrain.GetLength(1);
             var i = 0;
             var line = "";
+            var col = _terrain.GetLength(1);
             Console.WriteLine("--------------");
-            foreach (var c in _terrain)
+
+            foreach(var c in _terrain)
             {
                 line += string.Format("  {0}  ", c);
                 i++;
-                if (col == i)
+
+                if(col == i)
                 {
                     Console.WriteLine(line);
                     line = "";
@@ -119,9 +147,10 @@ namespace Practical.AI.FOL
         }
     }
 
+    // ------------------------------------------------
+
     public enum Direction
     {
         Up, Down, Left, Right
     }
-
 }

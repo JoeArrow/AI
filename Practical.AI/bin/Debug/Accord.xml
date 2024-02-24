@@ -314,6 +314,37 @@
             <returns>Returns point's distance from (0, 0) point.</returns>
             
         </member>
+        <member name="T:Accord.FormatDecoderAttribute">
+            <summary>
+              Specifies that a class can be used to decode a particular file type.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.FormatDecoderAttribute.Extension">
+            <summary>
+              Gets or sets the file extension that this format decoder applies to (i.e. "wav").
+            </summary>
+            
+        </member>
+        <member name="M:Accord.FormatDecoderAttribute.#ctor(System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Accord.FormatDecoderAttribute"/> class.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.FormatDecoderAttribute.PopulateDictionaryWithDecodersFromAllAssemblies``1(System.Collections.Generic.Dictionary{System.String,System.Type},System.String)">
+            <summary>
+              Populates the dictionary with available decoders of a particular category by 
+              inspecting types from all referenced assemblies. Note: calling this method
+              will force all referenced assemblies to be loaded into the current AppDomain.
+            </summary>
+            
+            <typeparam name="T">The base type for the decoders. This should be an interface such as IImageDecoder or IAudioDecoder.</typeparam>
+            
+            <param name="dictionary">The dictionary where the found decoders will be stored.</param>
+            <param name="extension">The extension we are interested in.</param>
+            
+        </member>
         <member name="T:Accord.SourceTypeAttribute">
             <summary>
               Specifies that an argument, in a method or function,
@@ -359,6 +390,28 @@
             <param name="binderType">The binder to be used to deserialize objects of this type.</param>
             
         </member>
+        <member name="T:Accord.SurrogateSelectorAttribute">
+            <summary>
+              Specifies a serialization surrogate to be used whenever a class is 
+              being deserialized by the framework. This can be used to ensure 
+              binary compatibility when the framework code changes.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.SurrogateSelectorAttribute.Selector">
+            <summary>
+              The binder to be used for the class marked with this attribute.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.SurrogateSelectorAttribute.#ctor(System.Type)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Accord.SurrogateSelectorAttribute"/> class.
+            </summary>
+            
+            <param name="surrogateSelectorType">The surrogate selector to be used to deserialize objects of this type.</param>
+            
+        </member>
         <member name="T:Accord.Collections.BinaryNode`1">
             <summary>
               Tree node for binary trees.
@@ -395,10 +448,38 @@
             </returns>
             
         </member>
+        <member name="P:Accord.Collections.BinaryNode`1.Children">
+            <summary>
+              Gets or sets the collection of child nodes
+              under this node.
+            </summary>
+            
+        </member>
         <member name="T:Accord.Collections.BinaryTree`1">
             <summary>
-              Base class for binary trees.
+              Base class for binary trees. This class does not implement a binary search
+              tree, but can used to implement one. For binary search trees, please refer
+              to <see cref="T:Accord.Collections.RedBlackTree`1"/>, KDTree and VPTree.
             </summary>
+            
+            <example>
+            <para>
+              The <see cref="T:Accord.Collections.BinaryTree`1"/> class is a base class for other tree classes
+              such as <see cref="T:Accord.Collections.RedBlackTree`1"/>, KDTree and VPTree. For examples on how to
+              use those classes, please see their respective documentation pages.</para>
+              
+            <para>
+              If you would like to implement your own binary tree that inherits from this class,
+              then you can do so as shown in the following example. First, make sure your custom
+              node class inherits from <see cref="T:Accord.Collections.BinaryNode`1"/> and passes itself as the generic 
+              argument of <see cref="T:Accord.Collections.BinaryNode`1"/>:</para>
+            <code source="Unit Tests\Accord.Tests.Core\BinaryTreeTest.cs" region="doc_ctor_1" />
+            
+            <para>
+              Now, once the tree node has been implemented, we can create a new <see cref="T:Accord.Collections.BinaryTree`1"/>
+              and explore the tree in different ways as shown below:</para>
+            <code source="Unit Tests\Accord.Tests.Core\BinaryTreeTest.cs" region="doc_ctor_2" />
+            </example>
             
             <typeparam name="TNode">The class type for the nodes of the tree.</typeparam>
             
@@ -441,6 +522,31 @@
             <returns>
               An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
             </returns>
+            
+        </member>
+        <member name="T:Accord.Collections.ITreeNode`1">
+            <summary>
+              Common interface for tree nodes, such as <see cref="T:Accord.Collections.BinaryTree`1"/> and <see cref="T:Accord.Collections.TreeNode`1"/>.
+            </summary>
+            
+            <typeparam name="TNode">The type of the tree node.</typeparam>
+            
+            <seealso cref="T:Accord.Collections.BinaryTree`1"/>
+            <seealso cref="T:Accord.Collections.TreeNode`1"/>
+            <seealso cref="T:Accord.Collections.RedBlackTree`1"/>
+            
+        </member>
+        <member name="P:Accord.Collections.ITreeNode`1.Children">
+            <summary>
+              Gets or sets the collection of child nodes
+              under this node.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.Collections.ITreeNode`1.IsLeaf">
+            <summary>
+              Gets whether this node is a leaf (has no children).
+            </summary>
             
         </member>
         <member name="T:Accord.Collections.PriorityOrder">
@@ -767,6 +873,215 @@
             </returns>
             
         </member>
+        <member name="T:Accord.Collections.OrderedDictionary`2">
+            <summary>
+              Ordered dictionary.
+            </summary>
+            
+            <remarks>
+              This class provides a ordered dictionary implementation for C#/.NET. Unlike the rest
+              of the framework, this class is available under a MIT license, so please feel free to
+              re-use its source code in your own projects.
+            </remarks>
+            
+            <typeparam name="TKey">The types of the keys in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of values in the dictionary.</typeparam>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Collections.OrderedDictionary`2"/> class.
+            </summary>
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Collections.OrderedDictionary`2"/> class.
+            </summary>
+            
+            <param name="capacity">The initial number of elements that the <see cref="T:Accord.Collections.OrderedDictionary`2"/> can contain.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Collections.OrderedDictionary`2"/> class.
+            </summary>
+            
+            <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
+                the default EqualityComparer for the type of the key.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Collections.OrderedDictionary`2"/> class.
+            </summary>
+            
+            <param name="capacity">The initial number of elements that the <see cref="T:Accord.Collections.OrderedDictionary`2"/> can contain.</param>
+            <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
+                the default EqualityComparer for the type of the key.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.#ctor(System.Collections.Generic.IDictionary{`0,`1},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Collections.OrderedDictionary`2"/> class.
+            </summary>
+            
+            <param name="dictionary">The System.Collections.Generic.IDictionary`2 whose elements are copied to the
+                new <see cref="T:Accord.Collections.OrderedDictionary`2"/>.</param>
+            <param name="comparer">The IEqualityComparer implementation to use when comparing keys, or null to use 
+                the default EqualityComparer for the type of the key.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.GetKeyByIndex(System.Int32)">
+            <summary>
+              Gets the <typeparam ref="TValue"/> at the specified index.
+            </summary>
+            
+            <param name="index">The index.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.GetValueByIndex(System.Int32)">
+            <summary>
+              Gets the <typeparam ref="TValue"/> at the specified index.
+            </summary>
+            
+            <param name="index">The index.</param>
+            
+        </member>
+        <member name="P:Accord.Collections.OrderedDictionary`2.Item(`0)">
+            <summary>
+              Gets or sets the <typeparam ref="TValue"/> with the specified key.
+            </summary>
+            
+            <param name="key">The key.</param>
+            
+        </member>
+        <member name="P:Accord.Collections.OrderedDictionary`2.Keys">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the keys of the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+            </summary>
+            
+            <value>The keys.</value>
+            
+        </member>
+        <member name="P:Accord.Collections.OrderedDictionary`2.Values">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1" /> containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.Collections.OrderedDictionary`2.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1" />.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.Collections.OrderedDictionary`2.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.
+            </summary>
+            
+            <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+            </summary>
+            
+            <param name="key">The object to use as the key of the element to add.</param>
+            <param name="value">The object to use as the value of the element to add.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <summary>
+            Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
+            </summary>
+            
+            <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Clear">
+            <summary>
+            Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <summary>
+            Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.
+            </summary>
+            
+            <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+            
+            <returns>true if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key.
+            </summary>
+            
+            <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2" />.</param>
+            
+            <returns>true if the <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the key; otherwise, false.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1" /> to an <see cref="T:System.Array" />, starting at a particular <see cref="T:System.Array" /> index.
+            </summary>
+            
+            <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see cref="T:System.Array" /> must have zero-based indexing.</param>
+            <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Remove(`0)">
+            <summary>
+            Removes the element with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2" />.
+            </summary>
+            
+            <param name="key">The key of the element to remove.</param>
+            
+            <returns>true if the element is successfully removed; otherwise, false.  This method also returns false if <paramref name="key" /> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2" />.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1" />.
+            </summary>
+            
+            <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
+            
+            <returns>true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            
+            <param name="key">The key whose value to get.</param>
+            <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value" /> parameter. This parameter is passed uninitialized.</param>
+            
+            <returns>true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2" /> contains an element with the specified key; otherwise, false.</returns>
+            
+        </member>
+        <member name="M:Accord.Collections.OrderedDictionary`2.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            
+            <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+            
+        </member>
         <member name="T:Accord.Collections.Tree`1">
             <summary>
               Base class for tree structures.
@@ -918,6 +1233,12 @@
         <member name="M:Accord.Collections.TreeTraversal.PostOrder``1(Accord.Collections.BinaryTree{``0})">
             <summary>
               Post-order tree traversal method.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Collections.TreeTraversal.DepthFirst``1(Accord.Collections.BinaryTree{``0})">
+            <summary>
+              Depth-first tree traversal method.
             </summary>
             
         </member>
@@ -2282,6 +2603,24 @@
         <member name="M:Accord.Diagnostics.Debug.Assert(System.Boolean,System.String)">
             <summary>
               Throws an exception if a condition is false.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.IFeatureDescriptor`1">
+            <summary>
+              Common interface for feature descriptors.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.IFeatureDescriptor`1.Descriptor">
+            <summary>
+              Gets or sets the descriptor vector associated with this point.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.IFeatureExtractor`2">
+            <summary>
+              Common interface for feature extractors.
             </summary>
             
         </member>
@@ -3925,8 +4264,24 @@
         </member>
         <member name="P:Accord.MachineLearning.IParallel.ParallelOptions">
             <summary>
-              Gets or sets the parallelization options for this algorithm.
+              Gets or sets the parallelization options for this algorithm. It can
+              be used to control the maximum number of cores that should be used
+              during the algorithm's execution.
             </summary>
+            
+            <remarks>
+              The <see cref="T:Accord.MachineLearning.IParallel"/> interface is implemented by most machine learning
+              algorithms in the framework, and it is most common use is to allow the user to
+              tune how many cores should be used by a multi-threaded learning algorithm.
+            </remarks>
+            
+            <example>
+            <para>
+              In the following example, we will be using the <see cref="P:Accord.MachineLearning.IParallel.ParallelOptions"/> property to limit 
+              the maximum degree of parallelism of a support vector machine learning algorithm to be 1, meaning
+              the algorithm will be running in a single thread:</para>
+              <code source="Unit Tests\Accord.Tests.MachineLearning\VectorMachines\MulticlassSupportVectorLearningTest.cs" region="doc_learn_ldcd" />
+            </example>
             
         </member>
         <member name="T:Accord.MachineLearning.ISupportsCancellation">
@@ -3963,7 +4318,7 @@
             </summary>
             
         </member>
-        <member name="T:Accord.MachineLearning.ITransform`2">
+        <member name="T:Accord.MachineLearning.ICovariantTransform`2">
             <summary>
               Common interface for data transformation algorithms. Examples of transformations include
               <see cref="T:Accord.MachineLearning.IClassifier`2">classifiers</see>, <see cref="T:Accord.MachineLearning.IRegression`2">regressions</see>
@@ -3974,7 +4329,7 @@
             <typeparam name="TOutput">The type for the input data that exits from the model. Default is double[].</typeparam>
             
         </member>
-        <member name="M:Accord.MachineLearning.ITransform`2.Transform(`0)">
+        <member name="M:Accord.MachineLearning.ICovariantTransform`2.Transform(`0)">
             <summary>
               Applies the transformation to an input, producing an associated output.
             </summary>
@@ -3984,7 +4339,7 @@
             <returns>The output generated by applying this transformation to the given input.</returns>
             
         </member>
-        <member name="M:Accord.MachineLearning.ITransform`2.Transform(`0[])">
+        <member name="M:Accord.MachineLearning.ICovariantTransform`2.Transform(`0[])">
             <summary>
               Applies the transformation to a set of input vectors,
               producing an associated set of output vectors.
@@ -3995,6 +4350,17 @@
             
             <returns>The output generated by applying this
               transformation to the given input.</returns>
+            
+        </member>
+        <member name="T:Accord.MachineLearning.ITransform`2">
+            <summary>
+              Common interface for data transformation algorithms. Examples of transformations include
+              <see cref="T:Accord.MachineLearning.IClassifier`2">classifiers</see>, <see cref="T:Accord.MachineLearning.IRegression`2">regressions</see>
+              and other machine learning techniques.
+            </summary>
+            
+            <typeparam name="TInput">The type for the output data that enters in the model. Default is double[].</typeparam>
+            <typeparam name="TOutput">The type for the input data that exits from the model. Default is double[].</typeparam>
             
         </member>
         <member name="M:Accord.MachineLearning.ITransform`2.Transform(`0[],`1[])">
@@ -4859,7 +5225,6 @@
                 </list></para>     
             </remarks>
             
-            <seealso cref="T:System.ICloneable" />
             <seealso cref="T:System.IFormattable" />
             
         </member>
@@ -7531,6 +7896,31 @@
             </example>
             
         </member>
+        <member name="M:Accord.ExtensionMethods.Add(System.Data.DataColumnCollection,Accord.Collections.OrderedDictionary{System.String,System.Type})">
+            <summary>
+              Creates and adds multiple <see cref="T:System.Data.DataColumn"/>
+              objects with the given names at once.
+            </summary>
+            
+            <param name="collection">The <see cref="T:System.Data.DataColumnCollection"/>
+              to add in.</param>
+            <param name="columns">The names of the <see cref="T:System.Data.DataColumn"/>s to
+              be created and added, alongside with their types.</param>
+            
+            <example>
+              <code>
+              DataTable table = new DataTable();
+              
+              // Add multiple columns at once:
+              table.Columns.Add(new OrderedDictionary&gt;String, Type&lt;()
+              {
+                  { "columnName1", typeof(int)    },
+                  { "columnName2", typeof(double) },
+              });
+              </code>
+            </example>
+            
+        </member>
         <member name="M:Accord.ExtensionMethods.GetDescription``1(``0)">
             <summary>
               Gets a the value of a <see cref="T:System.ComponentModel.DescriptionAttribute"/>
@@ -7622,6 +8012,19 @@
             <returns>The result of the conversion.</returns>
             
         </member>
+        <member name="M:Accord.ExtensionMethods.To(System.Object,System.Type)">
+            <summary>
+              Converts an object into another type, irrespective of whether
+              the conversion can be done at compile time or not. This can be
+              used to convert generic types to numeric types during runtime.
+            </summary>
+            
+            <param name="value">The value to be converted.</param>
+            <param name="type">The type that the value should be converted to.</param>
+            
+            <returns>The result of the conversion.</returns>
+            
+        </member>
         <member name="M:Accord.ExtensionMethods.HasDefaultConstructor(System.Type)">
             <summary>
               Determines whether the given type has a public default (parameterless) constructor.
@@ -7687,6 +8090,45 @@
             <summary>
               Determines whether <c>a &lt;= b</c>.
             </summary>
+            
+        </member>
+        <member name="M:Accord.ExtensionMethods.GetDefaultValue(System.Type)">
+            <summary>
+              Gets the default value for a type. This method should serve as
+              a programmatic equivalent to <c>default(T)</c>.
+            </summary>
+            
+            <param name="type">The type whose default value should be retrieved.</param>
+            
+        </member>
+        <member name="M:Accord.ExtensionMethods.AddressOf``1(``0)">
+            <summary>
+              Retrieves the memory address of a generic value type.
+            </summary>
+            
+            <typeparam name="T">The type of the object whose address needs to be retrieved.</typeparam>
+            <param name="t">The object those address needs to be retrieved.</param>
+            
+        </member>
+        <member name="M:Accord.ExtensionMethods.AddressOfRef``1(``0@)">
+            <summary>
+              Retrieves the memory address of a generic reference type.
+            </summary>
+            
+            <typeparam name="T">The type of the object whose address needs to be retrieved.</typeparam>
+            <param name="t">The object those address needs to be retrieved.</param>
+            
+        </member>
+        <member name="M:Accord.ExtensionMethods.DownloadFileWithRetry(System.Net.WebClient,System.String,System.String,System.Int32,System.Boolean)">
+            <summary>
+              Attempts to download a file from the web multiple times before giving up.
+            </summary>
+            
+            <param name="client">The web client to use.</param>
+            <param name="url">The URL of the file to be downloaded.</param>
+            <param name="fileName">The disk location where the file should be stored.</param>
+            <param name="maxAttempts">The maximum number of attempts.</param>
+            <param name="overwrite">Do not overwrite <paramref name="fileName"/> if it already exists.</param>
             
         </member>
         <member name="T:Accord.ConvergenceException">
@@ -7983,11 +8425,19 @@
             </remarks>
             
             <example>
-            <para>Basic usage:</para>
+            <para>
+              The first example shows the simplest way to use the serializer to persist objects:</para>
               <code source="Unit Tests\Accord.Tests.Core\SerializerTest.cs" region="doc_simple" />
               
-            <para>Compression:</para>
+            <para>
+              The second example shows the same, but using compression:</para>
               <code source="Unit Tests\Accord.Tests.Core\SerializerTest.cs" region="doc_compression" />
+              
+            <para>
+              The third and last example shows a complete example on how to create, save and re-load
+              a classifier from disk using serialization:</para>
+            <code source="Unit Tests\Accord.Tests.MachineLearning\KNearestNeighbors\KNearestNeighborsTest.cs" region="doc_learn" />
+            <code source="Unit Tests\Accord.Tests.MachineLearning\KNearestNeighbors\KNearestNeighborsTest.cs" region="doc_serialization" />
             </example>
             
         </member>
@@ -7997,6 +8447,17 @@
             </summary>
             
             <param name="obj">The object to be serialized.</param>
+            <param name="stream">The stream to which the object is to be serialized.</param>
+            <param name="compression">The type of compression to use. Default is None.</param>
+            
+        </member>
+        <member name="M:Accord.IO.Serializer.Save``1(``0,System.Runtime.Serialization.Formatters.Binary.BinaryFormatter,System.IO.Stream,Accord.IO.SerializerCompression)">
+            <summary>
+              Saves an object to a stream.
+            </summary>
+            
+            <param name="obj">The object to be serialized.</param>
+            <param name="formatter">The binary formatter.</param>
             <param name="stream">The stream to which the object is to be serialized.</param>
             <param name="compression">The type of compression to use. Default is None.</param>
             

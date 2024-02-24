@@ -53,11 +53,6 @@ namespace Practical.AI
             var l = new Variable(true) { Name = "l" };
             var t = new Variable(true) { Name = "t" };
 
-            // p v q ^ p v 'q ^ 'p v q ^ 'p v 'r
-            //var f1 = new And(new Or(p, q), new Or(p, new Not(q)));
-            //var f2 = new And(new Or(new Not(p), q), new Or(new Not(p), new Not(r)));
-            //var formula = new And(f1, f2);
-
             //var f1 = new Or(p, new Not(q));
             //var f2 = new Or(new Not(p), r);
             //var formula = new And(f1, new And(f2, q));
@@ -90,6 +85,8 @@ namespace Practical.AI
             //var formula = new And(new Not(p), p);
             //var bdt = BinaryDecisionTree.FromFormula(formula);
             
+            // Common...
+
             //var nnf = formula.ToNnf();
             //Console.WriteLine("NNF: " + nnf);
 
@@ -127,21 +124,8 @@ namespace Practical.AI
 
             //var cleaningRobot = new CleaningAgent(terrain, 0, 0);
             //cleaningRobot.Print();
-            //cleaningRobot.Start(200);
+            //cleaningRobot.Start(50000);
             //cleaningRobot.Print();
-
-
-            //var johnny = new Dog("Johnny", 17.5, Gender.Male);
-            //var jack = new Dog("Jack", 23.5, Gender.Male);
-            //var jordan = new Dog("Jack", 21.2, Gender.Male);
-            //var melissa = new Dog("Melissa", 19.7, Gender.Female);
-            //var dogs = new List<Dog> { johnny, jack, jordan, melissa };
-
-            //Predicate<Dog> maleFinder = (Dog d) => { return d.Sex == Gender.Male; };
-            //Predicate<Dog> heavyDogsFinder = (Dog d) => { return d.Weight >= 22; };
-
-            //var maleDogs = dogs.Find(maleFinder);
-            //var heavyDogs = dogs.Find(heavyDogsFinder);
 
             var water = new List<Tuple<int, int>>
             {
