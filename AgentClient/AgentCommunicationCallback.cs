@@ -22,7 +22,7 @@ namespace AgentClient
             EventHandler<UpdatedListEventArgs> handler = ServiceCallbackEvent;
             var e = state as UpdatedListEventArgs;
 
-            if (handler != null)
+            if(handler != null)
             {
                 handler(this, e);
             }

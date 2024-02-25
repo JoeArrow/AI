@@ -9,11 +9,11 @@ namespace Practical.AI.MultiAgentSystems.Planning
 {
     public class Plan
     {
-            public TypesPlan Name { get; set; }
+            public eTypesPlan Name { get; set; }
             public List<Tuple<int, int>> Path { get; set; }
             private MasCleaningAgent _agent;
 
-            public Plan(TypesPlan name, MasCleaningAgent agent)
+            public Plan(eTypesPlan name, MasCleaningAgent agent)
             {
                 Name = name;
                 Path = new List<Tuple<int, int>>();
@@ -44,7 +44,7 @@ namespace Practical.AI.MultiAgentSystems.Planning
             {
                 switch (Name)
                 {
-                    case TypesPlan.PathFinding:
+                    case eTypesPlan.PathFinding:
                         Path = PathFinding(source.Item1, source.Item2, dest.Item1, dest.Item2).Item2;
                         break;
                 }

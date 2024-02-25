@@ -40,3 +40,13 @@ C:\_Usage\_Source\Downloads\AI\AgentClient\obj\Debug\AgentClient.csproj.Generate
 C:\_Usage\_Source\Downloads\AI\AgentClient\obj\Debug\AgentClient.csproj.CoreCompileInputs.cache
 C:\_Usage\_Source\Downloads\AI\AgentClient\obj\Debug\AgentClient.exe
 C:\_Usage\_Source\Downloads\AI\AgentClient\obj\Debug\AgentClient.pdb
+C:\_Usage\_Source\AI\AgentClient\bin\Debug\AgentClient.exe.config
+C:\_Usage\_Source\AI\AgentClient\bin\Debug\AgentClient.exe
+C:\_Usage\_Source\AI\AgentClient\bin\Debug\AgentClient.pdb
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.csproj.AssemblyReference.cache
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.AgentClient.resources
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.Properties.Resources.resources
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.csproj.GenerateResource.cache
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.csproj.CoreCompileInputs.cache
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.exe
+C:\_Usage\_Source\AI\AgentClient\obj\Debug\AgentClient.pdb

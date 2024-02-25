@@ -45,7 +45,7 @@ namespace Practical.AI
             #region Propositional Logic & FOL
 
             var p = new Variable(true) { Name = "p" };
-            var q = new Variable(true) { Name = "q" }; 
+            var q = new Variable(true) { Name = "q" };
             var r = new Variable(true) { Name = "r" };
             var u = new Variable(true) { Name = "u" };
             var m = new Variable(true) { Name = "m" };
@@ -81,10 +81,10 @@ namespace Practical.AI
             //var f2 = new Or(p, new Or(q, r));
             //var f3 = new Or(p, new Not(q));
             //var formula = new And(f1, new And(f2, new And(f3, new Not(p))));
-            
+
             //var formula = new And(new Not(p), p);
             //var bdt = BinaryDecisionTree.FromFormula(formula);
-            
+
             // Common...
 
             //var nnf = formula.ToNnf();
@@ -105,11 +105,11 @@ namespace Practical.AI
             #region Agents
 
             //var terrain = new [,]
-            //                  {
-            //                      {0, 0, 0},
-            //                      {1, 1, 1},
-            //                      {2, 2, 2}
-            //                  };
+            //{
+            //    {0, 0, 0},
+            //    {1, 1, 1},
+            //    {2, 2, 2}
+            //};
             var terrain = new int[1000, 1];
             var random = new Random();
 
@@ -118,7 +118,9 @@ namespace Practical.AI
             //      for (int j = 0; j < terrain.GetLength(1); j++)
             //     {
             //         if (i == terrain.GetLength(0) - 1)
-            //            terrain[i, j] = 1;
+            //         {
+            //             terrain[i, j] = 1;
+            //         }
             //     }   
             //}
 
@@ -140,65 +142,64 @@ namespace Practical.AI
             };
 
             var beliefs = new List<Belief> {
-                new Belief(TypesBelief.PotentialWaterSpots, water), 
-                new Belief(TypesBelief.ObstaclesOnTerrain, obstacles), 
+                new Belief(eTypesBelief.PotentialWaterSpots, water),
+                new Belief(eTypesBelief.ObstaclesOnTerrain, obstacles),
             };
 
-            var marsTerrain = new [,]
-                              {
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0.8, -1, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0},
-                                  {0, -1, 0, 0, 0, 0, 0, 0, 0, 0}
+            var marsTerrain = new[,]
+            {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.8, -1, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0},
+                {0, -1, 0, 0, 0, 0, 0, 0, 0, 0}
             };
 
-
-            var marsUnderneathTerrain = new [,]
-                              {
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, true, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
-                                  {false, false, false, false, false, false, false, false, false, false},
+            var marsUnderneathTerrain = new[,]
+            {
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, true,  false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
+               {false, false, false, false, false, false, false, false, false, false},
             };
 
-            var marsRocksCompound = new [,]
-                              {
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"AXY", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"AXY", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"", "", "", "", "", "", "", "", "", ""},
-                                  {"AXY", "", "", "", "", "", "", "", "", ""}
+            var marsRocksCompound = new[,]
+            {
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"AXY", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"AXY", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "", "", "", ""},
+                {"AXY", "", "", "", "", "", "", "", "", ""}
             };
 
-            var roverTerrain = new [,]
-                              {
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0},
-                                  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+            var roverTerrain = new[,]
+            {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
             };
 
             var mars = new Mars(marsTerrain);
@@ -206,25 +207,25 @@ namespace Practical.AI
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(new MarsWorld(rover, mars, 10, 10));
+            Application.Run(new MarsWorld(rover, mars, 10, 10));
 
             #endregion
 
             #region Multi-Agent Systems
 
             //var room = new [,]
-            //               {
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            //                   {2, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            //                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-            //               };
+            //{
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            //    {2, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            //    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+            //};
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
@@ -232,7 +233,7 @@ namespace Practical.AI
             //const int N = 10;
             //const int M = 10;
             //var roomGui = new Room(N, M, room);
-            
+
             //InitCommunicationService();
 
             //var clAgent1 = new MasCleaningAgent(Guid.NewGuid(), room, roomGui, 0, 0, Color.Teal);
@@ -269,25 +270,25 @@ namespace Practical.AI
             #region SVM
 
             //var trainingSamples = new List<TrainingSample>
-            //                          {
-            //                              new TrainingSample(new double[] {1, 1}, 1),
-            //                              new TrainingSample(new double[] {1, 0}, 1),
-            //                              new TrainingSample(new double[] {2, 2}, -1),
-            //                              new TrainingSample(new double[] {2, 3}, -1),
-            //                          };
+            //{
+            //    new TrainingSample(new double[] {1, 1}, 1),
+            //    new TrainingSample(new double[] {1, 0}, 1),
+            //    new TrainingSample(new double[] {2, 2}, -1),
+            //    new TrainingSample(new double[] {2, 3}, -1),
+            //};
 
             //var svmClassifier = new LinearSvmClassifier(trainingSamples);
             //svmClassifier.Training();
             //svmClassifier.Predict(new List<double[]>
-            //                          {
-            //                              new double[] {1, 1},
-            //                              new double[] {1, 0},
-            //                              new double[] {2, 2},
-            //                              new double[] {2, 3}, 
-            //                              new double[] {2, 0}, 
-            //                              new []   {2.5, 1.5}, 
-            //                              new []   {0.5, 1.5}, 
-            //                          });
+            //{
+            //    new double[] {1, 1},
+            //    new double[] {1, 0},
+            //    new double[] {2, 2},
+            //    new double[] {2, 3}, 
+            //    new double[] {2, 0}, 
+            //    new []   {2.5, 1.5}, 
+            //    new []   {0.5, 1.5}, 
+            //});
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
@@ -327,11 +328,11 @@ namespace Practical.AI
             //var trainingDataSet = new TrainingDataSet(values, attribs, goalAttrib);
             //var dtree = DecisionTree.Learn(trainingDataSet, DtTrainingAlgorithm.Id3);
             //dtree.Visualize();
-            
+
             #endregion
 
             #region Neural Networks
-            
+
             //var trainingSamples = new List<TrainingSample>
             //                          {
             //                              new TrainingSample(new double[] {1, 1}, 0, new List<double> { 0 } ),
@@ -371,7 +372,7 @@ namespace Practical.AI
             //                  };
 
             //var predictions = adaline.PredictSet(toPredict);
-            
+
             //for (var i = 0; i < predictions.Count; i++)
             //    Console.WriteLine("Data: ( {0} , {1} ) Classified as: {2}", toPredict[i][0], toPredict[i][1], predictions[i]);
 
@@ -388,28 +389,28 @@ namespace Practical.AI
             #region Clustering
 
 
-                //var elements = new List<UnsupervisedLearning.Clustering.Element>
-                //                   {
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {1, 2}),
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {1, 3}),
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {3, 3}),
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {3, 4}),
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {6, 6}),
-                //                       new UnsupervisedLearning.Clustering.Element(new double[] {6, 7})
-                //                   };
-                //var dataSet = new DataSet();
-                //dataSet.Load(elements);
+            //var elements = new List<UnsupervisedLearning.Clustering.Element>
+            //                   {
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {1, 2}),
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {1, 3}),
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {3, 3}),
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {3, 4}),
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {6, 6}),
+            //                       new UnsupervisedLearning.Clustering.Element(new double[] {6, 7})
+            //                   };
+            //var dataSet = new DataSet();
+            //dataSet.Load(elements);
 
-                //var kMeans = new KMeans(3, dataSet);
-                //kMeans.Start();
+            //var kMeans = new KMeans(3, dataSet);
+            //kMeans.Start();
 
-                //foreach (var cluster in kMeans.Clusters)
-                //{
-                //    Console.WriteLine("Cluster No {0}", cluster.ClusterNo);
-                //    foreach (var obj in cluster.Objects)
-                //        Console.WriteLine("({0}, {1}) in {2}", obj.Features[0], obj.Features[1], obj.Cluster);
-                //    Console.WriteLine("--------------");
-                //}
+            //foreach (var cluster in kMeans.Clusters)
+            //{
+            //    Console.WriteLine("Cluster No {0}", cluster.ClusterNo);
+            //    foreach (var obj in cluster.Objects)
+            //        Console.WriteLine("({0}, {1}) in {2}", obj.Features[0], obj.Features[1], obj.Cluster);
+            //    Console.WriteLine("--------------");
+            //}
 
             #endregion
 
@@ -477,7 +478,7 @@ namespace Practical.AI
             ////                    {4, 5, 3},
             ////                    {7, 8, 6}
             //                //};
-            
+
             //var goalState = new[,]
             //                {
             //                    {1, 2, 3},
@@ -527,28 +528,27 @@ namespace Practical.AI
 
             #region Reinforcement Learning
 
-            var map = new [,]
-                          {
-                              {true, false, true, false, true},
-                              {true, true, true, false, true},
-                              {true, false, true, false, true},
-                              {true, false, true, true, true},
-                              {true, true, true, false, true}
-                          };
+            var map = new[,]
+            {
+                {true, false, true, false, true},
+                {true, true, true, false, true},
+                {true, false, true, false, true},
+                {true, false, true, true, true},
+                {true, true, true, false, true}
+            };
 
-            var reward = new [,]
-                          {
-                              {-0.01, -0.01, -0.01, -0.01, -0.01},
-                              {-0.01, -0.01, -0.01, -0.01, -0.01},
-                              {-0.01, -0.01, -0.01, -0.01, -0.01},
-                              {-0.01, -0.01, -0.01, -0.01, -0.01},
-                              {-0.01, -0.01, -0.01, -0.01, 1},
-
-                          };
+            var reward = new[,]
+            {
+                {-0.01, -0.01, -0.01, -0.01, -0.01},
+                {-0.01, -0.01, -0.01, -0.01, -0.01},
+                {-0.01, -0.01, -0.01, -0.01, -0.01},
+                {-0.01, -0.01, -0.01, -0.01, -0.01},
+                {-0.01, -0.01, -0.01, -0.01, 1},
+            };
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MazeGui(5, 5, map, reward));
+            //Application.Run(new MazeGui(5, 5, map, reward));
 
             #endregion
 
@@ -567,7 +567,7 @@ namespace Practical.AI
             {
                 // Step 3 Add a service endpoint.
                 var binding = new WSDualHttpBinding(WSDualHttpSecurityMode.None);
-                
+
                 selfHost.AddServiceEndpoint(typeof(IAgentCommunicationService),
                     binding, "AgentCommunicationService");
 
@@ -584,7 +584,7 @@ namespace Practical.AI
                 Console.WriteLine("Press <ENTER> to terminate service.");
                 Console.WriteLine();
             }
-            catch (CommunicationException ce)
+            catch(CommunicationException ce)
             {
                 Console.WriteLine("An exception occurred: {0}", ce.Message);
                 selfHost.Abort();
@@ -592,5 +592,3 @@ namespace Practical.AI
         }
     }
 }
-
-

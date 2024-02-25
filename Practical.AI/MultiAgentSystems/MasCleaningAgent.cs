@@ -111,7 +111,7 @@ namespace Practical.AI.MultiAgentSystems
                 {
                     if (Plan == null)
                     {
-                        Plan = new Plan(TypesPlan.PathFinding, this);
+                        Plan = new Plan(eTypesPlan.PathFinding, this);
                         Plan.BuildPlan(new Tuple<int, int>(X, Y), AreaTobeCleaned.First());
                     }
                     else if (Plan.Path.Count == 0)

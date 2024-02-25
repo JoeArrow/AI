@@ -66,14 +66,14 @@ namespace Practical.AI.Agents.GUI
                         if (pred != null && !pred.Contains(new Tuple<int, int>(i, j)))
                             continue;
 
-                        if (belief.Name == TypesBelief.ObstaclesOnTerrain)
+                        if (belief.Name == eTypesBelief.ObstaclesOnTerrain)
                         {
                             e.Graphics.DrawImage(new Bitmap("obstacle-transparency.png"), j * cellWidth, i * cellHeight,
                                                  cellWidth, cellHeight);
                             e.Graphics.DrawRectangle(new Pen(Color.Gold, 6), j * cellWidth, i * cellHeight,
                                                  cellWidth, cellHeight);
                         }
-                        if (belief.Name == TypesBelief.PotentialWaterSpots)
+                        if (belief.Name == eTypesBelief.PotentialWaterSpots)
                         {
                             e.Graphics.DrawImage(new Bitmap("water-transparency.png"), j * cellWidth, i * cellHeight,
                                                  cellWidth, cellHeight);

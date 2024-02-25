@@ -8,46 +8,50 @@ namespace AgentClient
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class AgentCommunicationService : IAgentCommunicationService
     {
-        private static List<IAgentCommunicationCallback> _callbackChannels = new List<IAgentCommunicationCallback>();
-        private static List<string> _messages = new List<string>();
         private static readonly object _sycnRoot = new object();
+        private static List<string> _messages = new List<string>();
+        private static List<IAgentCommunicationCallback> _callbackChannels = new List<IAgentCommunicationCallback>();
+
+        // ------------------------------------------------
 
         public void Subscribe()
         {
             try
             {
-                    var callbackChannel =
-                        OperationContext.Current.GetCallbackChannel<IAgentCommunicationCallback>();
-                    
-                    lock (_sycnRoot)
+                var callbackChannel =
+                    OperationContext.Current.GetCallbackChannel<IAgentCommunicationCallback>();
+
+                lock(_sycnRoot)
+                {
+                    if(!_callbackChannels.Contains(callbackChannel))
                     {
-                        if (!_callbackChannels.Contains(callbackChannel))
-                        {
-                            _callbackChannels.Add(callbackChannel);
-                            Console.WriteLine("Added Callback Channel: {0}", callbackChannel.GetHashCode());
-                            callbackChannel.SendUpdatedList(_messages);
-                        }
+                        _callbackChannels.Add(callbackChannel);
+                        Console.WriteLine("Added Callback Channel: {0}", callbackChannel.GetHashCode());
+                        callbackChannel.SendUpdatedList(_messages);
                     }
+                }
             }
-            catch 
+            catch
             {
-                
+
             }
         }
 
+        // ------------------------------------------------
+
         public void Send(string from, string to, string message)
         {
-            lock (_sycnRoot)
+            lock(_sycnRoot)
             {
                 _messages.Add(message);
 
                 Console.WriteLine("-- Message List --");
                 _messages.ForEach(listItem => Console.WriteLine(listItem));
-                Console.WriteLine("------------------");
+                Console.WriteLine(new string('-', 20));
 
-                for (int i = _callbackChannels.Count - 1; i >= 0; i--)
+                for(int i = _callbackChannels.Count - 1; i >= 0; i--)
                 {
-                    if (((ICommunicationObject)_callbackChannels[i]).State != CommunicationState.Opened)
+                    if(((ICommunicationObject)_callbackChannels[i]).State != CommunicationState.Opened)
                     {
                         Console.WriteLine("Detected Non-Open Callback Channel: {0}", _callbackChannels[i].GetHashCode());
                         _callbackChannels.RemoveAt(i);
@@ -59,7 +63,7 @@ namespace AgentClient
                         _callbackChannels[i].SendUpdatedList(_messages);
                         Console.WriteLine("Pushed Updated List on Callback Channel: {0}", _callbackChannels[i].GetHashCode());
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
                         Console.WriteLine("Service threw exception while communicating on Callback Channel: {0}", _callbackChannels[i].GetHashCode());
                         Console.WriteLine("Exception Type: {0} Description: {1}", ex.GetType(), ex.Message);

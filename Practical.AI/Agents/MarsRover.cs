@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Practical.AI.Agents
 {
@@ -27,7 +25,9 @@ namespace Practical.AI.Agents
         private int _wanderTimes;
         private const int WanderThreshold = 10;
 
-        public MarsRover(Mars mars, double [,] terrain, int x, int y, IEnumerable<Belief> initialBeliefs, double runningOver, int senseRadious)
+        // ------------------------------------------------
+
+        public MarsRover(Mars mars, double[,] terrain, int x, int y, IEnumerable<Belief> initialBeliefs, double runningOver, int senseRadious)
         {
             Mars = mars;
             X = x;
@@ -39,7 +39,7 @@ namespace Practical.AI.Agents
             Intentions = new Stack<Intention>();
             PlanLibrary = new List<Plan>
                               {
-                                  new  Plan(TypesPlan.PathFinding, this), 
+                                  new  Plan(eTypesPlan.PathFinding, this),
                               };
             WaterFound = new List<Tuple<int, int>>();
             RunningOverThreshold = runningOver;
@@ -49,51 +49,60 @@ namespace Practical.AI.Agents
             _perceivedCells = new Dictionary<Tuple<int, int>, int>();
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Percepts function
         /// </summary>
         /// <returns></returns>
+
         public List<Percept> GetPercepts()
         {
             var result = new List<Percept>();
 
-            if (MoveAvailable(X - 1, Y))
-                result.Add(new Percept(new Tuple<int,int>(X - 1, Y), TypePercept.MoveUp));
+            if(MoveAvailable(X - 1, Y))
+                result.Add(new Percept(new Tuple<int, int>(X - 1, Y), eTypePercept.MoveUp));
 
-            if (MoveAvailable(X + 1, Y))
-                result.Add(new Percept(new Tuple<int, int>(X + 1, Y), TypePercept.MoveDown));
+            if(MoveAvailable(X + 1, Y))
+                result.Add(new Percept(new Tuple<int, int>(X + 1, Y), eTypePercept.MoveDown));
 
-            if (MoveAvailable(X, Y - 1))
-                result.Add(new Percept(new Tuple<int, int>(X, Y - 1), TypePercept.MoveLeft));
+            if(MoveAvailable(X, Y - 1))
+                result.Add(new Percept(new Tuple<int, int>(X, Y - 1), eTypePercept.MoveLeft));
 
-            if (MoveAvailable(X, Y + 1))
-                result.Add(new Percept(new Tuple<int, int>(X, Y + 1), TypePercept.MoveRight));
+            if(MoveAvailable(X, Y + 1))
+                result.Add(new Percept(new Tuple<int, int>(X, Y + 1), eTypePercept.MoveRight));
 
             result.AddRange(LookAround());
 
             return result;
         }
-        
+
+        // ------------------------------------------------
+
         public IEnumerable<Percept> GetCurrentTerrain()
         {
             var R = SenseRadius;
             CurrentTerrain.Clear();
             var result = new List<Percept>();
 
-            for (var i = X - R > 0 ? X - R : 0; i <= X + R; i++)
+            for(var i = X - R > 0 ? X - R : 0; i <= X + R; i++)
             {
-                for (var j = Y; Math.Pow((j - Y), 2) + Math.Pow((i - X), 2) <= Math.Pow(R, 2); j--)
+                for(var j = Y; Math.Pow((j - Y), 2) + Math.Pow((i - X), 2) <= Math.Pow(R, 2); j--)
                 {
-                    if (j < 0 || i >= _terrain.GetLength(0)) break;
+                    if(j < 0 || i >= _terrain.GetLength(0)) { break; }
+
                     // In the circle
+
                     result.AddRange(CheckTerrain(Mars.TerrainAt(i, j), new Tuple<int, int>(i, j)));
                     CurrentTerrain.Add(new Tuple<int, int>(i, j));
                     UpdatePerceivedCellsDicc(new Tuple<int, int>(i, j));
                 }
-                for (var j = Y + 1; (j - Y) * (j - Y) + (i - X) * (i - X) <= R * R; j++)
+
+                for(var j = Y + 1; (j - Y) * (j - Y) + (i - X) * (i - X) <= R * R; j++)
                 {
-                    if (j >= _terrain.GetLength(1) || i >= _terrain.GetLength(0)) break;
+                    if(j >= _terrain.GetLength(1) || i >= _terrain.GetLength(0)) { break; }
+
                     // In the circle
+
                     result.AddRange(CheckTerrain(Mars.TerrainAt(i, j), new Tuple<int, int>(i, j)));
                     CurrentTerrain.Add(new Tuple<int, int>(i, j));
                     UpdatePerceivedCellsDicc(new Tuple<int, int>(i, j));
@@ -103,92 +112,105 @@ namespace Practical.AI.Agents
             return result;
         }
 
+        // ------------------------------------------------
+
         private void UpdatePerceivedCellsDicc(Tuple<int, int> position)
         {
-            if (!_perceivedCells.ContainsKey(position))
+            if(!_perceivedCells.ContainsKey(position))
+            {
                 _perceivedCells.Add(position, 0);
+            }
+
             _perceivedCells[position]++;
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Look around the rover.
         /// </summary>
         /// <returns></returns>
+
         private IEnumerable<Percept> LookAround()
         {
             return GetCurrentTerrain();
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Check a given cell in the terrain
         /// </summary>
         /// <param name="cell">Value of the cell</param>
         /// <param name="position">Its coordenates</param>
         /// <returns></returns>
+
         private IEnumerable<Percept> CheckTerrain(double cell, Tuple<int, int> position)
         {
             var result = new List<Percept>();
 
-            if (cell > RunningOverThreshold)
-                result.Add(new Percept(position, TypePercept.Obstacle));
-            else if (cell < 0)
-                result.Add(new Percept(position, TypePercept.WaterSpot));
+            if(cell > RunningOverThreshold)
+                result.Add(new Percept(position, eTypePercept.Obstacle));
+            else if(cell < 0)
+                result.Add(new Percept(position, eTypePercept.WaterSpot));
 
             _terrain[position.Item1, position.Item2] = cell;
 
             return result;
         }
 
+        // ------------------------------------------------
         /// <summary>
-        /// Determines whether a move to cell (x, y) is available.
+        ///     Determines whether a move to cell (x, y) is available.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
+
         public bool MoveAvailable(int x, int y)
         {
             return x >= 0 && y >= 0 && x < _terrain.GetLength(0) && y < _terrain.GetLength(1) && _terrain[x, y] < RunningOverThreshold;
         }
 
-        public TypesAction Action(List<Percept> percepts)
+        // ------------------------------------------------
+
+        public eTypesAction Action(List<Percept> percepts)
         {
             // Reactive Layer
-            if (Mars.WaterAt(X, Y) && !WaterFound.Contains(new Tuple<int, int>(X, Y)))
-                return TypesAction.Dig;
+            if(Mars.WaterAt(X, Y) && !WaterFound.Contains(new Tuple<int, int>(X, Y)))
+                return eTypesAction.Dig;
 
-            var waterPercepts = percepts.FindAll(p => p.Type == TypePercept.WaterSpot);
+            var waterPercepts = percepts.FindAll(p => p.Type == eTypePercept.WaterSpot);
 
-            if (waterPercepts.Count > 0)
+            if(waterPercepts.Count > 0)
             {
-                foreach (var waterPercept in waterPercepts)
+                foreach(var waterPercept in waterPercepts)
                 {
-                    var belief = Beliefs.FirstOrDefault(b => b.Name == TypesBelief.PotentialWaterSpots);
+                    var belief = Beliefs.FirstOrDefault(b => b.Name == eTypesBelief.PotentialWaterSpots);
                     List<Tuple<int, int>> pred;
-                    if (belief != null)
+                    if(belief != null)
                         pred = belief.Predicate as List<Tuple<int, int>>;
                     else
                     {
-                        pred = new List<Tuple<int, int>> {waterPercept.Position};
-                        Beliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, pred));
+                        pred = new List<Tuple<int, int>> { waterPercept.Position };
+                        Beliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, pred));
                     }
-                    if (!WaterFound.Contains(waterPercept.Position))
+                    if(!WaterFound.Contains(waterPercept.Position))
                         pred.Add(waterPercept.Position);
                     else
                     {
                         pred.RemoveAll(
                             t => t.Item1 == waterPercept.Position.Item1 && t.Item2 == waterPercept.Position.Item2);
-                        if (pred.Count == 0)
+                        if(pred.Count == 0)
                             Beliefs.RemoveAll(b => (b.Predicate as List<Tuple<int, int>>).Count == 0);
                     }
                 }
 
-                if (waterPercepts.Any(p => !WaterFound.Contains(p.Position)))
+                if(waterPercepts.Any(p => !WaterFound.Contains(p.Position)))
                     CurrentPlan = null;
             }
 
-            if (Beliefs.Count == 0)
+            if(Beliefs.Count == 0)
             {
-                if (_wanderTimes == WanderThreshold)
+                if(_wanderTimes == WanderThreshold)
                 {
                     _wanderTimes = 0;
                     InjectBelief();
@@ -196,7 +218,7 @@ namespace Practical.AI.Agents
                 _wanderTimes++;
                 return RandomMove(percepts);
             }
-            if (CurrentPlan == null || CurrentPlan.FulFill())
+            if(CurrentPlan == null || CurrentPlan.FulFill())
             {
                 // Deliberative Layer
                 Brf(percepts);
@@ -206,6 +228,8 @@ namespace Practical.AI.Agents
 
             return CurrentPlan.NextAction();
         }
+
+        // ------------------------------------------------
 
         private void InjectBelief()
         {
@@ -225,206 +249,228 @@ namespace Practical.AI.Agents
 
             var min = Math.Min(freq1stSector, Math.Min(freq2ndSector, Math.Min(freq3rdSector, freq4thSector)));
 
-            if (min == freq1stSector)
-                Beliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(0, 0) }));
-            else if (min == freq2ndSector)
-                Beliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(0, _terrain.GetLength(1) - 1) }));
-            else if (min == freq3rdSector)
-                Beliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(_terrain.GetLength(0) - 1, 0) }));
+            if(min == freq1stSector)
+                Beliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(0, 0) }));
+            else if(min == freq2ndSector)
+                Beliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(0, _terrain.GetLength(1) - 1) }));
+            else if(min == freq3rdSector)
+                Beliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(_terrain.GetLength(0) - 1, 0) }));
             else
-                Beliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(_terrain.GetLength(0) - 1, _terrain.GetLength(1) - 1) }));
+                Beliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, new List<Tuple<int, int>> { new Tuple<int, int>(_terrain.GetLength(0) - 1, _terrain.GetLength(1) - 1) }));
         }
+
+        // ------------------------------------------------
 
         private double SetRelativeFreq(List<KeyValuePair<Tuple<int, int>, int>> cells)
         {
             var result = 0.0;
 
-            foreach (var cell in cells) 
+            foreach(var cell in cells)
                 result += RelativeFrequency(cell.Value, cells.Count);
 
             return result;
         }
 
+        // ------------------------------------------------
+
         private double RelativeFrequency(int absFreq, int n)
         {
-            return (double) absFreq/n;
+            return (double)absFreq / n;
         }
 
-        private TypesAction RandomMove(List<Percept> percepts)
+        // ------------------------------------------------
+
+        private eTypesAction RandomMove(List<Percept> percepts)
         {
             var moves = percepts.FindAll(p => p.Type.ToString().Contains("Move"));
             var selectedMove = moves[_random.Next(0, moves.Count)];
 
-            switch (selectedMove.Type)
+            switch(selectedMove.Type)
             {
-                case TypePercept.MoveUp:
-                    return TypesAction.MoveUp;
-                case TypePercept.MoveDown:
-                    return TypesAction.MoveDown;
-                case TypePercept.MoveRight:
-                    return TypesAction.MoveRight;
-                case TypePercept.MoveLeft:
-                    return TypesAction.MoveLeft;
+                case eTypePercept.MoveUp:
+                    return eTypesAction.MoveUp;
+                case eTypePercept.MoveDown:
+                    return eTypesAction.MoveDown;
+                case eTypePercept.MoveRight:
+                    return eTypesAction.MoveRight;
+                case eTypePercept.MoveLeft:
+                    return eTypesAction.MoveLeft;
             }
 
-            return TypesAction.None;
+            return eTypesAction.None;
         }
 
-        public void ExecuteAction(TypesAction action, List<Percept> percepts)
+        // ------------------------------------------------
+
+        public void ExecuteAction(eTypesAction action, List<Percept> percepts)
         {
-            switch (action)
+            switch(action)
             {
-                case TypesAction.MoveUp:
+                case eTypesAction.MoveUp:
                     X -= 1;
                     break;
-                case TypesAction.MoveDown:
+                case eTypesAction.MoveDown:
                     X += 1;
                     break;
-                case TypesAction.MoveLeft:
+                case eTypesAction.MoveLeft:
                     Y -= 1;
                     break;
-                case TypesAction.MoveRight:
+                case eTypesAction.MoveRight:
                     Y += 1;
                     break;
-                case TypesAction.Dig:
+                case eTypesAction.Dig:
                     WaterFound.Add(new Tuple<int, int>(X, Y));
                     break;
             }
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Beliefs revision function
         /// </summary>
         /// <param name="percepts"></param>
+
         public void Brf(List<Percept> percepts)
         {
             var newBeliefs = new List<Belief>();
 
-            foreach (var b in Beliefs)
+            foreach(var b in Beliefs)
             {
-                switch (b.Name)
+                switch(b.Name)
                 {
-                    case TypesBelief.PotentialWaterSpots:
+                    case eTypesBelief.PotentialWaterSpots:
                         var waterSpots = new List<Tuple<int, int>>(b.Predicate);
-                        waterSpots = UpdateBelief(TypesBelief.PotentialWaterSpots, waterSpots);
-                        if (waterSpots.Count > 0)
-                            newBeliefs.Add(new Belief(TypesBelief.PotentialWaterSpots, waterSpots));
+                        waterSpots = UpdateBelief(eTypesBelief.PotentialWaterSpots, waterSpots);
+                        if(waterSpots.Count > 0)
+                            newBeliefs.Add(new Belief(eTypesBelief.PotentialWaterSpots, waterSpots));
                         break;
-                    case TypesBelief.ObstaclesOnTerrain:
+                    case eTypesBelief.ObstaclesOnTerrain:
                         var obstacleSpots = new List<Tuple<int, int>>(b.Predicate);
-                        obstacleSpots = UpdateBelief(TypesBelief.ObstaclesOnTerrain, obstacleSpots);
-                        if (obstacleSpots.Count > 0)
-                            newBeliefs.Add(new Belief(TypesBelief.ObstaclesOnTerrain, obstacleSpots));
+                        obstacleSpots = UpdateBelief(eTypesBelief.ObstaclesOnTerrain, obstacleSpots);
+                        if(obstacleSpots.Count > 0)
+                            newBeliefs.Add(new Belief(eTypesBelief.ObstaclesOnTerrain, obstacleSpots));
                         break;
                 }
-            }          
+            }
 
             Beliefs = new List<Belief>(newBeliefs);
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Updates set of beliefs.
         /// </summary>
         /// <param name="belief"> </param>
         /// <param name="beliefPos"></param>
         /// <returns></returns>
-        private List<Tuple<int, int>> UpdateBelief(TypesBelief belief, IEnumerable<Tuple<int, int>> beliefPos)
+
+        private List<Tuple<int, int>> UpdateBelief(eTypesBelief belief, IEnumerable<Tuple<int, int>> beliefPos)
         {
             var result = new List<Tuple<int, int>>();
 
-            foreach (var spot in beliefPos)
+            foreach(var spot in beliefPos)
             {
-                 if (CurrentTerrain.Contains(new Tuple<int, int>(spot.Item1, spot.Item2)))
-                 {
-                    switch (belief)
+                if(CurrentTerrain.Contains(new Tuple<int, int>(spot.Item1, spot.Item2)))
+                {
+                    switch(belief)
                     {
-                        case TypesBelief.PotentialWaterSpots:
-                            if (_terrain[spot.Item1, spot.Item2] >= 0)
+                        case eTypesBelief.PotentialWaterSpots:
+                            if(_terrain[spot.Item1, spot.Item2] >= 0)
                                 continue;
                             break;
-                        case TypesBelief.ObstaclesOnTerrain:
-                            if (_terrain[spot.Item1, spot.Item2] < RunningOverThreshold)
+                        case eTypesBelief.ObstaclesOnTerrain:
+                            if(_terrain[spot.Item1, spot.Item2] < RunningOverThreshold)
                                 continue;
                             break;
                     }
-                 }
-                 result.Add(spot);
+                }
+                result.Add(spot);
             }
-                        
+
             return result;
         }
 
+        // ------------------------------------------------
         /// <summary>
-        /// Generates desires.
+        ///     Generates desires.
         /// </summary>
+
         public void Options()
         {
             Desires.Clear();
 
-             foreach (var b in Beliefs)
-             {
-                  if (b.Name == TypesBelief.PotentialWaterSpots)
-                  {
-                      var waterPos = b.Predicate as List<Tuple<int, int>>;
-                      waterPos.Sort(delegate(Tuple<int, int> tupleA, Tuple<int, int> tupleB)
-                                        {
-                                            var distA = ManhattanDistance(tupleA, new Tuple<int, int>(X, Y));
-                                            var distB = ManhattanDistance(tupleB, new Tuple<int, int>(X, Y));
-                                            if (distA < distB)
-                                                return 1;
-                                            if (distA > distB)
-                                                return -1;
-                                            return 0;
-                                        });
-                      foreach (var wPos in waterPos)
-                          Desires.Enqueue(new Desire(TypesDesire.FindWater, new Desire(TypesDesire.GotoLocation, new Desire(TypesDesire.Dig, wPos))));
-                  }
-             }
+            foreach(var b in Beliefs)
+            {
+                if(b.Name == eTypesBelief.PotentialWaterSpots)
+                {
+                    var waterPos = b.Predicate as List<Tuple<int, int>>;
+                    waterPos.Sort(delegate (Tuple<int, int> tupleA, Tuple<int, int> tupleB)
+                                      {
+                                          var distA = ManhattanDistance(tupleA, new Tuple<int, int>(X, Y));
+                                          var distB = ManhattanDistance(tupleB, new Tuple<int, int>(X, Y));
+                                          if(distA < distB)
+                                              return 1;
+                                          if(distA > distB)
+                                              return -1;
+                                          return 0;
+                                      });
+                    foreach(var wPos in waterPos)
+                        Desires.Enqueue(new Desire(eTypesDesire.FindWater, new Desire(eTypesDesire.GotoLocation, new Desire(eTypesDesire.Dig, wPos))));
+                }
+            }
         }
 
+        // ------------------------------------------------
         /// <summary>
         /// Determines which desires will become intentions or which intentions should remain or be deleted.
         /// </summary>
         /// <param name="percepts"></param>
+
         private void Filter()
         {
             Intentions.Clear();
 
-             foreach (var desire in Desires)
+            foreach(var desire in Desires)
             {
-                if (desire.SubDesires.Count > 0)
+                if(desire.SubDesires.Count > 0)
                 {
                     var primaryDesires = desire.GetSubDesires();
                     primaryDesires.Reverse();
-                    foreach (var d in primaryDesires)
+                    foreach(var d in primaryDesires)
                         Intentions.Push(Intention.FromDesire(d));
                 }
                 else
                     Intentions.Push(Intention.FromDesire(desire));
             }
 
-            if (Intentions.Any() && !ExistsPlan())
+            if(Intentions.Any() && !ExistsPlan())
                 ChoosePlan();
         }
+
+        // ------------------------------------------------
 
         private void ChoosePlan()
         {
             var primaryIntention = Intentions.Pop();
             var location = primaryIntention.Predicate as Tuple<int, int>;
 
-            switch (primaryIntention.Name)
+            switch(primaryIntention.Name)
             {
-                case TypesDesire.Dig:
-                    CurrentPlan = PlanLibrary.First(p => p.Name == TypesPlan.PathFinding);
+                case eTypesDesire.Dig:
+                    CurrentPlan = PlanLibrary.First(p => p.Name == eTypesPlan.PathFinding);
                     CurrentPlan.BuildPlan(new Tuple<int, int>(X, Y), location);
                     break;
             }
         }
 
+        // ------------------------------------------------
+
         public bool ExistsPlan()
         {
             return CurrentPlan != null && CurrentPlan.Path.Count > 0;
         }
+
+        // ------------------------------------------------
 
         public int ManhattanDistance(Tuple<int, int> x, Tuple<int, int> y)
         {
@@ -432,254 +478,51 @@ namespace Practical.AI.Agents
         }
     }
 
-    /// <summary>
-    /// Represents Mars environment.
-    /// </summary>
-    public class Mars
+    // ------------------------------------------------
+
+    public enum eTypePercept
     {
-        private readonly double[,] _terrain;
-
-        public Mars(double[,] terrain)
-        {
-            _terrain = new double[terrain.GetLength(0), terrain.GetLength(1)];
-            Array.Copy(terrain, _terrain, terrain.GetLength(0) * terrain.GetLength(1));
-        }
-
-        public double TerrainAt(int x, int y)
-        {
-            return _terrain[x, y];
-        }
-
-        public bool WaterAt(int x, int y)
-        {
-            return _terrain[x, y] < 0;
-        }
+        WaterSpot, 
+        Obstacle, 
+        MoveUp, 
+        MoveDown, 
+        MoveLeft, 
+        MoveRight
     }
 
-    public class Belief
+    // ------------------------------------------------
+
+    public enum eTypesBelief
     {
-        public TypesBelief Name { get; set; }
-        public dynamic Predicate;
-        
-        public Belief(TypesBelief name, dynamic predicate)
-        {
-            Name = name;
-            Predicate = predicate;
-        }
-
-        public override string ToString()
-        {
-            var result = "";
-            var coord = Predicate as List<Tuple<int, int>>;
-
-            foreach (var c in coord)
-                result += Name + " (" + c.Item1 + "," + c.Item2 + ")" + "\n";
-            
-            return result;
-        }
+        PotentialWaterSpots, 
+        ObstaclesOnTerrain
     }
 
-    public class Desire
+    // ------------------------------------------------
+
+    public enum eTypesDesire
     {
-        public TypesDesire Name { get; set; }
-        public dynamic Predicate;
-        public List<Desire> SubDesires { get; set; }
-
-        public Desire() { SubDesires = new List<Desire>(); }
-
-        public Desire(TypesDesire name)
-        {
-            Name = name;
-            SubDesires = new List<Desire>();
-        } 
-
-        public Desire(TypesDesire name, dynamic predicate)
-        {
-            Name = name;
-            Predicate = predicate;
-            SubDesires = new List<Desire>();
-        }
-
-        public Desire(TypesDesire name, IEnumerable<Desire> subDesires)
-        {
-            Name = name;
-            SubDesires = new List<Desire>(subDesires);
-        }
-
-        public Desire(TypesDesire name, params Desire[] subDesires)
-        {
-            Name = name;
-            SubDesires = new List<Desire>(subDesires);
-        }
-
-        public List<Desire> GetSubDesires()
-        {
-            if (SubDesires.Count == 0)
-                return new List<Desire>() { this };
-
-            var result = new List<Desire>();
-
-            foreach (var desire in SubDesires)
-                result.AddRange(desire.GetSubDesires());
-
-            return result;
-        }
-
-        public override string ToString()
-        {
-            return Name.ToString() + "\n";
-        }
+        FindWater, 
+        GotoLocation, 
+        Dig
     }
 
-    public class Intention: Desire
-    {
-        public static Intention FromDesire(Desire desire)
-        {
-            var result = new Intention
-                             {
-                                 Name = desire.Name,
-                                 SubDesires = new List<Desire>(desire.SubDesires),
-                                 Predicate = desire.Predicate
-                             };
+    // ------------------------------------------------
 
-            return result;
-        }
-    }
-
-    public class Plan
-    {
-        public TypesPlan Name { get; set; }
-        public List<Tuple<int, int>> Path { get; set; }
-        private MarsRover _rover;
-
-        public Plan(TypesPlan name, MarsRover rover)
-        {
-            Name = name;
-            Path = new List<Tuple<int, int>>();
-            _rover = rover;
-        }
-
-        public TypesAction NextAction()
-        {
-            if (Path.Count == 0)
-                return TypesAction.None;
-            
-            var next = Path.First();
-            Path.RemoveAt(0);
-
-            if (_rover.X > next.Item1)
-                 return TypesAction.MoveUp;
-            if (_rover.X < next.Item1)
-                 return TypesAction.MoveDown;
-            if (_rover.Y < next.Item2)
-                return TypesAction.MoveRight;
-            if(_rover.Y > next.Item2)
-                return TypesAction.MoveLeft;
-
-            return TypesAction.None;
-        }
-
-        public void BuildPlan(Tuple<int, int> source, Tuple<int, int> dest)
-        {
-            switch (Name)
-            {
-                    case TypesPlan.PathFinding:
-                        Path = PathFinding(source.Item1, source.Item2, dest.Item1, dest.Item2).Item2;
-                        break;
-            }
-        }
-
-        private Tuple<Tuple<int, int>, List<Tuple<int, int>>> PathFinding(int x1, int y1, int x2, int y2)
-        {
-            var queue = new Queue<Tuple<Tuple<int, int>, List<Tuple<int, int>>>>();
-            queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x1, y1), new List<Tuple<int, int>>()));
-            var hashSetVisitedCells = new HashSet<Tuple<int, int>>();
-
-            while(queue.Count > 0)
-            {
-                var currentCell = queue.Dequeue();
-                var currentPath = currentCell.Item2;
-                hashSetVisitedCells.Add(currentCell.Item1);
-                var x = currentCell.Item1.Item1;
-                var y = currentCell.Item1.Item2;
-
-                if (x == x2 && y == y2)
-                    return currentCell;
-
-                // Up
-                if (_rover.MoveAvailable(x - 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x - 1, y)))
-                {
-                    var pathUp = new List<Tuple<int, int>>(currentPath);
-                    pathUp.Add(new Tuple<int, int>(x - 1, y));
-                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x - 1, y), pathUp));   
-                }
-                // Down
-                if (_rover.MoveAvailable(x + 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x + 1, y)))
-                {
-                    var pathDown = new List<Tuple<int, int>>(currentPath);
-                    pathDown.Add(new Tuple<int, int>(x + 1, y));
-                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x + 1, y), pathDown));
-                }
-                // Left
-                if (_rover.MoveAvailable(x, y - 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y - 1)))
-                {
-                    var pathLeft = new List<Tuple<int, int>>(currentPath);
-                    pathLeft.Add(new Tuple<int, int>(x, y - 1));
-                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x, y - 1), pathLeft));
-                }
-                // Right
-                if (_rover.MoveAvailable(x, y + 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y + 1)))
-                {
-                    var pathRight = new List<Tuple<int, int>>(currentPath);
-                    pathRight.Add(new Tuple<int, int>(x, y + 1));
-                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x, y + 1), pathRight));
-                }
-            }
-
-            return null;
-        }
-
-        public bool FulFill()
-        {
-            return Path.Count == 0;
-        }
-    }
-
-    public class Percept
-    {
-        public TypePercept Type { get; set; }
-        public Tuple<int, int> Position { get; set; }
-
-        public Percept(Tuple<int, int> position, TypePercept percept)
-        {
-            Position = position;
-            Type = percept;
-        }
-    }
-
-    public enum TypePercept
-    {
-        WaterSpot, Obstacle, MoveUp, MoveDown, MoveLeft, MoveRight
-    }
-
-    public enum TypesBelief
-    {
-        PotentialWaterSpots, ObstaclesOnTerrain
-    }
-
-    public enum TypesDesire
-    {
-        FindWater, GotoLocation, Dig
-    }
-
-    public enum TypesPlan
+    public enum eTypesPlan
     {
         PathFinding
     }
 
-    public enum TypesAction
+    // ------------------------------------------------
+
+    public enum eTypesAction
     {
-        MoveUp, MoveDown, MoveLeft, MoveRight, Dig,
+        MoveUp, 
+        MoveDown, 
+        MoveLeft, 
+        MoveRight, 
+        Dig,
         None
     }
 }

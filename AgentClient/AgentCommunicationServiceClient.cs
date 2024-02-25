@@ -7,10 +7,14 @@ namespace AgentClient
         public AgentCommunicationServiceClient(InstanceContext callbackInstance, WSDualHttpBinding binding, EndpointAddress endpointAddress) 
             : base(callbackInstance, binding, endpointAddress) { }
 
+        // ------------------------------------------------
+
         public void Subscribe()
         {
             Channel.Subscribe();
         }
+
+        // ------------------------------------------------
 
         public void Send(string from, string to, string message)
         {
