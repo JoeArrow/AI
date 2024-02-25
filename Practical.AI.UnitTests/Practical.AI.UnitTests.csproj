@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agents\MarsRover_UnitTests.cs" />
     <Compile Include="CleaningRobot_UnitTests.cs" />
     <Compile Include="DPLL_UnitTests.cs" />
     <Compile Include="Predicates\Dog_UnitTests.cs" />

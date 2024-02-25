@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{C93A5C00-6534-42B4-A588-C9213EA0F93C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		CodeCoverage.runsettings = CodeCoverage.runsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practical.AI.UnitTests", "Practical.AI.UnitTests\Practical.AI.UnitTests.csproj", "{7B642DA7-BE09-4D50-9F10-19713DB941C4}"

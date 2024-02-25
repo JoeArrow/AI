@@ -8,9 +8,9 @@ namespace Practical.AI.Agents
 
     public class Plan
     {
+        private MarsRover _rover;
         public eTypesPlan Name { get; set; }
         public List<Tuple<int, int>> Path { get; set; }
-        private MarsRover _rover;
 
         // ----------------------------------------------------
 
@@ -26,7 +26,7 @@ namespace Practical.AI.Agents
         public eTypesAction NextAction()
         {
             if(Path.Count == 0) { return eTypesAction.None; }
-            
+
             var next = Path.First();
             Path.RemoveAt(0);
 
@@ -42,11 +42,11 @@ namespace Practical.AI.Agents
 
         public void BuildPlan(Tuple<int, int> source, Tuple<int, int> dest)
         {
-            switch (Name)
+            switch(Name)
             {
-                    case eTypesPlan.PathFinding:
-                        Path = PathFinding(source.Item1, source.Item2, dest.Item1, dest.Item2).Item2;
-                        break;
+                case eTypesPlan.PathFinding:
+                    Path = PathFinding(source.Item1, source.Item2, dest.Item1, dest.Item2).Item2;
+                    break;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Practical.AI.Agents
 
                 var x = currentCell.Item1.Item1;
                 var y = currentCell.Item1.Item2;
-                
+
                 hashSetVisitedCells.Add(currentCell.Item1);
 
                 if(x == x2 && y == y2)
@@ -75,41 +75,37 @@ namespace Practical.AI.Agents
 
                 // --
                 // Up
-                
-                if (_rover.MoveAvailable(x - 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x - 1, y)))
+
+                if(_rover.MoveAvailable(x - 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x - 1, y)))
                 {
-                    var pathUp = new List<Tuple<int, int>>(currentPath);
-                    pathUp.Add(new Tuple<int, int>(x - 1, y));
-                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x - 1, y), pathUp));   
+                    var pathUp = new List<Tuple<int, int>>(currentPath) { new Tuple<int, int>(x - 1, y) };
+                    queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x - 1, y), pathUp));
                 }
 
                 // ----
                 // Down
-                
-                if (_rover.MoveAvailable(x + 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x + 1, y)))
+
+                if(_rover.MoveAvailable(x + 1, y) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x + 1, y)))
                 {
-                    var pathDown = new List<Tuple<int, int>>(currentPath);
-                    pathDown.Add(new Tuple<int, int>(x + 1, y));
+                    var pathDown = new List<Tuple<int, int>>(currentPath) { new Tuple<int, int>(x + 1, y) };
                     queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x + 1, y), pathDown));
                 }
 
                 // ----
                 // Left
-                
-                if (_rover.MoveAvailable(x, y - 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y - 1)))
+
+                if(_rover.MoveAvailable(x, y - 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y - 1)))
                 {
-                    var pathLeft = new List<Tuple<int, int>>(currentPath);
-                    pathLeft.Add(new Tuple<int, int>(x, y - 1));
+                    var pathLeft = new List<Tuple<int, int>>(currentPath) { new Tuple<int, int>(x, y - 1) };
                     queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x, y - 1), pathLeft));
                 }
 
                 // -----
                 // Right
-                
-                if (_rover.MoveAvailable(x, y + 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y + 1)))
+
+                if(_rover.MoveAvailable(x, y + 1) && !hashSetVisitedCells.Contains(new Tuple<int, int>(x, y + 1)))
                 {
-                    var pathRight = new List<Tuple<int, int>>(currentPath);
-                    pathRight.Add(new Tuple<int, int>(x, y + 1));
+                    var pathRight = new List<Tuple<int, int>>(currentPath) { new Tuple<int, int>(x, y + 1) };
                     queue.Enqueue(new Tuple<Tuple<int, int>, List<Tuple<int, int>>>(new Tuple<int, int>(x, y + 1), pathRight));
                 }
             }
