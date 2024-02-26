@@ -389,6 +389,7 @@ namespace Practical.AI.Agents
                         }
 
                         break;
+
                     case eTypesBelief.ObstaclesOnTerrain:
                         var obstacleSpots = new List<Tuple<int, int>>(b.Predicate);
                         obstacleSpots = UpdateBelief(eTypesBelief.ObstaclesOnTerrain, obstacleSpots);
