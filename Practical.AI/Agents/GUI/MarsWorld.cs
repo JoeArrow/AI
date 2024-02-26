@@ -54,7 +54,7 @@ namespace Practical.AI.Agents.GUI
             {
                 for(var j = 0; j < _m; j++)
                 {
-                    if(_mars.TerrainAt(i, j) > _marsRover.RunningOverThreshold)
+                    if(_mars.TerrainAt(i, j) > _marsRover.ObstacleThreshold)
                     {
                         e.Graphics.DrawImage(new Bitmap("obstacle-transparency.png"), j * cellWidth, i * cellHeight, cellWidth, cellHeight);
                     }

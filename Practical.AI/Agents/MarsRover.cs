@@ -14,8 +14,8 @@ namespace Practical.AI.Agents
         public List<Belief> Beliefs { get; set; }
         public Queue<Desire> Desires { get; set; }
         public List<Plan> PlanLibrary { get; set; }
+        public double ObstacleThreshold { get; set; }
         public Stack<Intention> Intentions { get; set; }
-        public double RunningOverThreshold { get; set; }
         public List<Tuple<int, int>> WaterFound { get; set; }
 
         // ---------------------------------------------------------
@@ -40,7 +40,7 @@ namespace Practical.AI.Agents
 
             _random = new Random();
             SenseRadius = senseRadious;
-            RunningOverThreshold = runningOver;
+            ObstacleThreshold = runningOver;
 
             Desires = new Queue<Desire>();
             Intentions = new Stack<Intention>();
@@ -149,7 +149,7 @@ namespace Practical.AI.Agents
         {
             var result = new List<Percept>();
 
-            if(cell > RunningOverThreshold)
+            if(cell > ObstacleThreshold)
             {
                 result.Add(new Percept(position, eTypePercept.Obstacle));
             }
@@ -173,7 +173,7 @@ namespace Practical.AI.Agents
 
         public bool MoveAvailable(int x, int y)
         {
-            return x >= 0 && y >= 0 && x < _terrain.GetLength(0) && y < _terrain.GetLength(1) && _terrain[x, y] < RunningOverThreshold;
+            return x >= 0 && y >= 0 && x < _terrain.GetLength(0) && y < _terrain.GetLength(1) && _terrain[x, y] < ObstacleThreshold;
         }
 
         // ------------------------------------------------
@@ -429,7 +429,7 @@ namespace Practical.AI.Agents
                             break;
 
                         case eTypesBelief.ObstaclesOnTerrain:
-                            if(_terrain[spot.Item1, spot.Item2] < RunningOverThreshold) { continue; }
+                            if(_terrain[spot.Item1, spot.Item2] < ObstacleThreshold) { continue; }
                             break;
                     }
                 }
