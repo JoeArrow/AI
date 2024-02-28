@@ -8,7 +8,7 @@ namespace Practical.AI.Agents
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public Mars Mars { get; set; }
+        public IDomain Mars { get; set; }
         public int SenseRadius { get; set; }
         public Plan CurrentPlan { get; set; }
         public List<Belief> Beliefs { get; set; }
@@ -31,27 +31,33 @@ namespace Practical.AI.Agents
 
         // ------------------------------------------------
 
-        public MarsRover(Mars mars, double[,] terrain, int x, int y, 
-                         IEnumerable<Belief> initialBeliefs, double runningOver, int senseRadious)
+        public MarsRover(DomainRequest req)
         {
-            X = x;
-            Y = y;
-            Mars = mars;
+            X = req.X;
+            Y = req.Y;
+            Mars = req.Domain;
 
             _random = new Random();
-            SenseRadius = senseRadious;
-            ObstacleThreshold = runningOver;
+            SenseRadius = req.SenseRadius;
+            ObstacleThreshold = req.ObstacleThreshold;
 
             Desires = new Queue<Desire>();
             Intentions = new Stack<Intention>();
             WaterFound = new List<Tuple<int, int>>();
-            Beliefs = new List<Belief>(initialBeliefs);
+            Beliefs = new List<Belief>(req.InitialBeliefs);
             CurrentTerrain = new List<Tuple<int, int>>();
             _perceivedCells = new Dictionary<Tuple<int, int>, int>();
-            _terrain = new double[terrain.GetLength(0), terrain.GetLength(1)];
+            _terrain = new double[req.Terrain.GetLength(0), req.Terrain.GetLength(1)];
             PlanLibrary = new List<Plan> { new  Plan(eTypesPlan.PathFinding, this), };
-            Array.Copy(terrain, _terrain, terrain.GetLength(0) * terrain.GetLength(1));
+            Array.Copy(req.Terrain, _terrain, req.Terrain.GetLength(0) * req.Terrain.GetLength(1));
         }
+
+        // ------------------------------------------------
+
+        public MarsRover(IDomain mars, double[,] terrain, int x, int y, 
+                         IEnumerable<Belief> initialBeliefs, double obstacle, int senseRadius)
+            : this(new DomainRequest() { X = x, Y = y, Domain = mars, SenseRadius = senseRadius, Terrain = terrain,
+                                         ObstacleThreshold = obstacle, InitialBeliefs = initialBeliefs, }) { }
 
         // ------------------------------------------------
         /// <summary>

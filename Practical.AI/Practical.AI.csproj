@@ -110,12 +110,14 @@
     <Compile Include="Agents\Belief.cs" />
     <Compile Include="Agents\CleaningAgent.cs" />
     <Compile Include="Agents\Desire.cs" />
+    <Compile Include="Agents\DomainRequest.cs" />
     <Compile Include="Agents\GUI\MarsWorld.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Agents\GUI\MarsWorld.Designer.cs">
       <DependentUpon>MarsWorld.cs</DependentUpon>
     </Compile>
+    <Compile Include="Agents\IDomain.cs" />
     <Compile Include="Agents\Intention.cs" />
     <Compile Include="Agents\Mars.cs" />
     <Compile Include="Agents\MarsRover.cs" />

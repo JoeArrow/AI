@@ -5,14 +5,12 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Practical.AI.Agents;
-using Practical.AI.SupervisedLearning.NeuralNetworks;
 
 namespace Practical.AI.UnitTests.Agents
 {
     [TestClass]
     public class MarsRover_UnitTests
     {
-
         private double[,] terrain = new double[,]
         {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -63,7 +61,7 @@ namespace Practical.AI.UnitTests.Agents
 
         [TestMethod]
         [DataRow(7, 8, 0.75, 2)]
-        public void Constructor_MarsRover(int x, int y, double runningOver, int senseRadious)
+        public void Constructor_MarsRover(int x, int y, double obsticalThreshold, int senseRadious)
         {
             // -------
             // Arrange
@@ -73,7 +71,7 @@ namespace Practical.AI.UnitTests.Agents
             // ---
             // Act
 
-            var sut = new MarsRover(mars, terrain, x, y, beliefs, runningOver, senseRadious);
+            var sut = new MarsRover(mars, terrain, x, y, beliefs, obsticalThreshold, senseRadious);
 
             // ------
             // Assert
@@ -85,13 +83,13 @@ namespace Practical.AI.UnitTests.Agents
 
         [TestMethod]
         [DataRow(7, 8, 0.75, 2, 4)]
-        public void GetPercepts_MarsRover(int x, int y, double runningOver, int senseRadious, int expected)
+        public void GetPercepts_MarsRover(int x, int y, double obsticalThreshold, int senseRadious, int expected)
         {
             // -------
             // Arrange
 
             var mars = new Mars(terrain);
-            var sut = new MarsRover(mars, terrain, x, y, beliefs, runningOver, senseRadious);
+            var sut = new MarsRover(mars, terrain, x, y, beliefs, obsticalThreshold, senseRadious);
 
             // ---
             // Act
@@ -109,14 +107,14 @@ namespace Practical.AI.UnitTests.Agents
         [TestMethod]
         [DataRow(0.0, 7, 8, 0.75, 2, 0)]
         [DataRow(1.0, 7, 8, 0.75, 2, 1)]
-        public void GetCurrentTerrain_MarsRover(double testVal, int x, int y, double runningOver, int senseRadious, int expected)
+        public void GetCurrentTerrain_MarsRover(double testVal, int x, int y, double obsticalThreshold, int senseRadious, int expected)
         {
             // -------
             // Arrange
 
             terrain[x, y] = testVal;
             var mars = new Mars(terrain);
-            var sut = new MarsRover(mars, terrain, x, y, beliefs, runningOver, senseRadious);
+            var sut = new MarsRover(mars, terrain, x, y, beliefs, obsticalThreshold, senseRadious);
 
             // ---
             // Act
@@ -133,14 +131,14 @@ namespace Practical.AI.UnitTests.Agents
 
         [TestMethod]
         [DataRow(1.0, 7, 8, 0.75, 2, eTypePercept.WaterSpot, eTypesAction.MoveUp)]
-        public void Action_MarsRover(double testVal, int x, int y, double runningOver, int senseRadious, eTypePercept percept, eTypesAction expected)
+        public void Action_MarsRover(double testVal, int x, int y, double obsticalThreshold, int senseRadious, eTypePercept percept, eTypesAction expected)
         {
             // -------
             // Arrange
 
             terrain[x, y] = testVal;
             var mars = new Mars(terrain);
-            var sut = new MarsRover(mars, terrain, x, y, beliefs, runningOver, senseRadious);
+            var sut = new MarsRover(mars, terrain, x, y, beliefs, obsticalThreshold, senseRadious);
             var percepts = sut.GetPercepts();
             percepts.Add(new Percept(new Tuple<int, int>(5, 5), percept));
 
