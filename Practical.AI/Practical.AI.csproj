@@ -116,6 +116,7 @@
     <Compile Include="Agents\GUI\MarsWorld.Designer.cs">
       <DependentUpon>MarsWorld.cs</DependentUpon>
     </Compile>
+    <Compile Include="Agents\IDomain.cs" />
     <Compile Include="Agents\Intention.cs" />
     <Compile Include="Agents\Mars.cs" />
     <Compile Include="Agents\MarsRover.cs" />

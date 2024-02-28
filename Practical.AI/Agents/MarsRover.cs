@@ -8,7 +8,7 @@ namespace Practical.AI.Agents
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public Mars Mars { get; set; }
+        public IDomain Mars { get; set; }
         public int SenseRadius { get; set; }
         public Plan CurrentPlan { get; set; }
         public List<Belief> Beliefs { get; set; }
@@ -31,7 +31,7 @@ namespace Practical.AI.Agents
 
         // ------------------------------------------------
 
-        public MarsRover(Mars mars, double[,] terrain, int x, int y, 
+        public MarsRover(IDomain mars, double[,] terrain, int x, int y, 
                          IEnumerable<Belief> initialBeliefs, double obstacle, int senseRadious)
         {
             X = x;

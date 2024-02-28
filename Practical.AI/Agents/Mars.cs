@@ -6,8 +6,8 @@ namespace Practical.AI.Agents
     /// <summary>
     ///     Represents Mars environment.
     /// </summary>
-    
-    public class Mars
+
+    public class Mars : IDomain
     {
         private readonly double[,] _terrain;
 
