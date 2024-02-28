@@ -32,7 +32,7 @@ namespace Practical.AI.Agents
         // ------------------------------------------------
 
         public MarsRover(Mars mars, double[,] terrain, int x, int y, 
-                         IEnumerable<Belief> initialBeliefs, double runningOver, int senseRadious)
+                         IEnumerable<Belief> initialBeliefs, double obstacle, int senseRadious)
         {
             X = x;
             Y = y;
@@ -40,7 +40,7 @@ namespace Practical.AI.Agents
 
             _random = new Random();
             SenseRadius = senseRadious;
-            ObstacleThreshold = runningOver;
+            ObstacleThreshold = obstacle;
 
             Desires = new Queue<Desire>();
             Intentions = new Stack<Intention>();
