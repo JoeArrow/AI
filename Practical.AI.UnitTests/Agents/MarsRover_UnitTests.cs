@@ -77,6 +77,8 @@ namespace Practical.AI.UnitTests.Agents
             // Assert
 
             Assert.IsNotNull(sut);
+            Assert.AreEqual(x, sut.X);
+            Assert.AreEqual(y, sut.Y);
         }
 
         // ------------------------------------------------
