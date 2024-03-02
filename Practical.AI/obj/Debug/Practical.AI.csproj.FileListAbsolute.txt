@@ -478,3 +478,4 @@ F:\_Usage\_Source\CSharp\JoeWare\AI\Practical.AI\obj\Debug\Practical.AI.csproj.C
 F:\_Usage\_Source\CSharp\JoeWare\AI\Practical.AI\obj\Debug\Practical.AI.csproj.CopyComplete
 F:\_Usage\_Source\CSharp\JoeWare\AI\Practical.AI\obj\Debug\Practical.AI.exe
 F:\_Usage\_Source\CSharp\JoeWare\AI\Practical.AI\obj\Debug\Practical.AI.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\Practical.AI\bin\Debug\Accord.dll.config

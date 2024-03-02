@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Practical.AI.Agents
 {
@@ -20,15 +21,16 @@ namespace Practical.AI.Agents
 
         public override string ToString()
         {
-            var result = "";
+            var cr = Environment.NewLine;
+            var retVal = new StringBuilder();
             var coord = Predicate as List<Tuple<int, int>>;
 
             foreach(var c in coord)
             {
-                result += Name + " (" + c.Item1 + "," + c.Item2 + ")" + "\n";
+                retVal.Append($"{Name} ({c.Item1},{c.Item2}){cr}");
             }
             
-            return result;
+            return retVal.ToString();
         }
     }
 }
