@@ -6,8 +6,8 @@ namespace Practical.AI.Agents
 {
     public class Belief
     {
-        public eTypesBelief Name { get; set; }
         public dynamic Predicate;
+        public eTypesBelief Name { get; set; }
 
         // ------------------------------------------------
 
