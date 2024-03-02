@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
+
 using Practical.AI.SupervisedLearning.SVM;
 
 namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecognition
@@ -35,13 +32,13 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
 
         private void PaintBoxMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if(e.Button == MouseButtons.Left)
                 _mouseIsDown = true;
         }
 
         private void PaintBoxMouseMove(object sender, MouseEventArgs e)
         {
-            if (_mouseIsDown)
+            if(_mouseIsDown)
             {
                 var point = paintBox.PointToClient(Cursor.Position);
                 DrawPoint((point.X), (point.Y), Color.FromArgb(255, 255, 255, 255));
@@ -70,12 +67,13 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
             var weights = new List<double>();
             var j = 0;
 
-            while (!weightsFile.EndOfStream)
+            while(!weightsFile.EndOfStream)
             {
                 var currentLine = weightsFile.ReadLine();
 
                 // End of weights for current unit.
-                if (currentLine == "*")
+
+                if(currentLine == "*")
                 {
                     currentLayer.Units[j].Weights = new List<double>(weights);
                     j++;
@@ -84,7 +82,7 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
                 }
 
                 // End of layer.
-                if (currentLine == "-")
+                if(currentLine == "-")
                 {
                     currentLayer = _handwrittenDigitRecogNn.OutPutLayer;
                     j = 0;
@@ -100,15 +98,16 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
 
         private void ClassifyBtnClick(object sender, EventArgs e)
         {
-             if (Directory.GetFiles(Directory.GetCurrentDirectory()).Any(file => file == Directory.GetCurrentDirectory() + "weights.txt")) {
+            if(Directory.GetFiles(Directory.GetCurrentDirectory()).Any(file => file == Directory.GetCurrentDirectory() + "weights.txt"))
+            {
                 MessageBox.Show("Warning", "No weights file, you need to train your NN first");
-             }
+            }
 
-             if (!_weightsLoaded)
-             {
-                 ReadWeights();
-                 _weightsLoaded = true;
-             }
+            if(!_weightsLoaded)
+            {
+                ReadWeights();
+                _weightsLoaded = true;
+            }
 
             var digitMatrix = GetImage(_bitmap);
             var prediction = _handwrittenDigitRecogNn.Predict(digitMatrix.Cast<double>().Select(c => c).ToArray());
@@ -119,12 +118,12 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
         {
             var trainingDataSet = new List<TrainingSample>();
             var trainingDataSetFiles = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Digits");
-            
+
             foreach(var file in trainingDataSetFiles)
             {
                 var name = file.Remove(file.LastIndexOf(".")).Substring(file.LastIndexOf("\\") + 1);
                 var @class = int.Parse(name.Substring(0, 1));
-                var classVec = new[] {0.0, 0.0, 0.0};
+                var classVec = new[] { 0.0, 0.0, 0.0 };
                 classVec[@class - 1] = 1;
                 var imgMatrix = GetImage(new Bitmap(file));
                 var imgVector = imgMatrix.Cast<double>().Select(c => c).ToArray();
@@ -136,11 +135,11 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
 
             var fileWeights = new StreamWriter("weights.txt", false);
 
-            foreach (var layer in _handwrittenDigitRecogNn.Layers)
+            foreach(var layer in _handwrittenDigitRecogNn.Layers)
             {
-                foreach (var unit in layer.Units)
+                foreach(var unit in layer.Units)
                 {
-                    foreach (var w in unit.Weights)
+                    foreach(var w in unit.Weights)
                         fileWeights.WriteLine(w);
                     fileWeights.WriteLine("*");
                 }
@@ -153,13 +152,13 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
             MessageBox.Show("Training Complete!", "Message");
         }
 
-        private double [,] GetImage(Bitmap bitmap)
+        private double[,] GetImage(Bitmap bitmap)
         {
             var result = new double[bitmap.Width, bitmap.Height];
 
-            for (var i = 0; i < bitmap.Width; i++)
+            for(var i = 0; i < bitmap.Width; i++)
             {
-                for (var j = 0; j < bitmap.Height; j++)
+                for(var j = 0; j < bitmap.Height; j++)
                 {
                     var pixel = bitmap.GetPixel(i, j);
                     result[i, j] = pixel.R + pixel.G + pixel.B == 0 ? 0 : 1;
@@ -174,6 +173,5 @@ namespace Practical.AI.SupervisedLearning.NeuralNetworks.HandwrittenDigitRecogni
             _bitmap = new Bitmap(paintBox.Width, paintBox.Height);
             paintBox.Refresh();
         }
-
     }
 }

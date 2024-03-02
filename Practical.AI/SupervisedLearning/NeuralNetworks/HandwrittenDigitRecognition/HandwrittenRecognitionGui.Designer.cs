@@ -44,9 +44,11 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.paintBox);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(16, 15);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(167, 116);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(223, 143);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Drawing";
@@ -55,9 +57,10 @@
             // 
             this.paintBox.BackColor = System.Drawing.Color.Black;
             this.paintBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.paintBox.Location = new System.Drawing.Point(68, 47);
+            this.paintBox.Location = new System.Drawing.Point(91, 58);
+            this.paintBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.paintBox.Name = "paintBox";
-            this.paintBox.Size = new System.Drawing.Size(30, 30);
+            this.paintBox.Size = new System.Drawing.Size(39, 36);
             this.paintBox.TabIndex = 0;
             this.paintBox.TabStop = false;
             this.paintBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintBoxPaint);
@@ -72,18 +75,21 @@
             this.groupBox2.Controls.Add(this.trainBtn);
             this.groupBox2.Controls.Add(this.classBox);
             this.groupBox2.Controls.Add(this.classifyBtn);
-            this.groupBox2.Location = new System.Drawing.Point(185, 12);
+            this.groupBox2.Location = new System.Drawing.Point(247, 15);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(159, 116);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Size = new System.Drawing.Size(212, 143);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Neural Network";
             // 
             // cleanBtn
             // 
-            this.cleanBtn.Location = new System.Drawing.Point(0, 58);
+            this.cleanBtn.Location = new System.Drawing.Point(0, 71);
+            this.cleanBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cleanBtn.Name = "cleanBtn";
-            this.cleanBtn.Size = new System.Drawing.Size(152, 23);
+            this.cleanBtn.Size = new System.Drawing.Size(203, 28);
             this.cleanBtn.TabIndex = 4;
             this.cleanBtn.Text = "Clean";
             this.cleanBtn.UseVisualStyleBackColor = true;
@@ -92,17 +98,19 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 33);
+            this.label1.Location = new System.Drawing.Point(8, 41);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.Size = new System.Drawing.Size(86, 16);
             this.label1.TabIndex = 3;
             this.label1.Text = "Classification";
             // 
             // trainBtn
             // 
-            this.trainBtn.Location = new System.Drawing.Point(82, 87);
+            this.trainBtn.Location = new System.Drawing.Point(109, 107);
+            this.trainBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.trainBtn.Name = "trainBtn";
-            this.trainBtn.Size = new System.Drawing.Size(70, 22);
+            this.trainBtn.Size = new System.Drawing.Size(93, 27);
             this.trainBtn.TabIndex = 2;
             this.trainBtn.Text = "Train";
             this.trainBtn.UseVisualStyleBackColor = true;
@@ -110,16 +118,18 @@
             // 
             // classBox
             // 
-            this.classBox.Location = new System.Drawing.Point(80, 30);
+            this.classBox.Location = new System.Drawing.Point(107, 37);
+            this.classBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.classBox.Name = "classBox";
-            this.classBox.Size = new System.Drawing.Size(73, 20);
+            this.classBox.Size = new System.Drawing.Size(96, 22);
             this.classBox.TabIndex = 1;
             // 
             // classifyBtn
             // 
-            this.classifyBtn.Location = new System.Drawing.Point(6, 87);
+            this.classifyBtn.Location = new System.Drawing.Point(8, 107);
+            this.classifyBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.classifyBtn.Name = "classifyBtn";
-            this.classifyBtn.Size = new System.Drawing.Size(68, 23);
+            this.classifyBtn.Size = new System.Drawing.Size(91, 28);
             this.classifyBtn.TabIndex = 0;
             this.classifyBtn.Text = "Classify";
             this.classifyBtn.UseVisualStyleBackColor = true;
@@ -127,12 +137,14 @@
             // 
             // HandwrittenRecognitionGui
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 138);
+            this.ClientSize = new System.Drawing.Size(469, 170);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "HandwrittenRecognitionGui";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HandwrittenRecognitionGui";
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.paintBox)).EndInit();
