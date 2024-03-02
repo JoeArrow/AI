@@ -60,3 +60,13 @@ C:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.csproj.Gen
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.csproj.CoreCompileInputs.cache
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.exe
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\bin\Debug\AgentClient.exe.config
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\bin\Debug\AgentClient.exe
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\bin\Debug\AgentClient.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.csproj.AssemblyReference.cache
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.AgentClient.resources
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.Properties.Resources.resources
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.csproj.GenerateResource.cache
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.csproj.CoreCompileInputs.cache
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.exe
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentClient\obj\Debug\AgentClient.pdb
