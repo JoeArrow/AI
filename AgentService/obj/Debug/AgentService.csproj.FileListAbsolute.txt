@@ -66,3 +66,14 @@ C:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.csproj.C
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.csproj.CopyComplete
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.exe
 C:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentService.exe.config
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentService.exe
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentService.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentClient.exe
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentClient.pdb
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\bin\Debug\AgentClient.exe.config
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.csproj.AssemblyReference.cache
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.csproj.CoreCompileInputs.cache
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.csproj.CopyComplete
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.exe
+F:\_Usage\_Source\CSharp\JoeWare\AI\AgentService\obj\Debug\AgentService.pdb
