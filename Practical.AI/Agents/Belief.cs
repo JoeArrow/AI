@@ -6,8 +6,8 @@ namespace Practical.AI.Agents
 {
     public class Belief
     {
-        public eTypesBelief Name { get; set; }
         public dynamic Predicate;
+        public eTypesBelief Name { get; set; }
 
         // ------------------------------------------------
 
@@ -23,11 +23,11 @@ namespace Practical.AI.Agents
         {
             var cr = Environment.NewLine;
             var result = new StringBuilder();
-            var coord = Predicate as List<Tuple<int, int>>;
+            var path = Predicate as List<Tuple<int, int>>;
 
-            foreach(var c in coord)
+            foreach(var cell in path)
             {
-                result.Append($"{Name} ({c.Item1},{c.Item2}){cr}");
+                result.Append($"{Name} ({cell.Item1},{cell.Item2}){cr}");
             }
             
             return result.ToString();
