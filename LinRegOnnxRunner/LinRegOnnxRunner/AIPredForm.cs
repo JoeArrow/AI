@@ -1,19 +1,14 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace LinRegOnnxRunner
 {
-    public partial class Form1 : Form
+    public partial class AIPredForm : Form
     {
         private readonly InferenceSession _session;
         private readonly string _inputName;
 
-        public Form1()
+        public AIPredForm()
         {
             InitializeComponent();
 

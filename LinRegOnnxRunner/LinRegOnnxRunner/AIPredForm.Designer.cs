@@ -1,6 +1,6 @@
 ﻿namespace LinRegOnnxRunner
 {
-    partial class Form1
+    partial class AIPredForm
     {
         /// <summary>
         ///  Required designer variable.
