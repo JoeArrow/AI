@@ -14,9 +14,11 @@ namespace LogicPuzzle.Core
 {
     public sealed class WorkingGrid
     {
+        private bool _isPropagating;
         private readonly Dictionary<string, Category> _categoriesByName;
         private readonly Dictionary<CategoryPairKey, GridMatrix> _matrices;
-        private bool _isPropagating;
+
+        // ------------------------------------------------
 
         public WorkingGrid(List<Category> categories)
         {

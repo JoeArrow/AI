@@ -760,8 +760,7 @@ namespace LogicPuzzle.Core.Tests
         [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
                  "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
                  "['Alice','Cat']",
-                 "['Bob','Cat']"
-             )]
+                 "['Bob','Cat']")]
         public void SetNo_WorkingGrid_ThrowsWhenColumnHasNoPossibleMatch(string cat1Json,
                                                                  string cat2Json,
                                                                  string noPair1Json,
@@ -790,8 +789,9 @@ namespace LogicPuzzle.Core.Tests
         // ------------------------------------------------
 
         [TestMethod]
-        [DataRow( "{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
-                  0, 0, 0, 1)]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", 
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, 0, 1)]
         public void ValidateMatrixConsistency_WorkingGrid_ThrowsOnRowContradiction(string cat1Json, string cat2Json, int row1, 
                                                                                    int column1, int row2, int column2)
         {
@@ -852,7 +852,8 @@ namespace LogicPuzzle.Core.Tests
         // ------------------------------------------------
 
         [TestMethod]
-        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", 
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
                  0, 0, 1, 0)]
         public void ValidateMatrixConsistency_WorkingGrid_ThrowsOnColumnContradiction(string cat1Json, string cat2Json, int row1, 
                                                                                       int column1, int row2, int column2)

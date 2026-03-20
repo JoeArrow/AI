@@ -10,11 +10,34 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using LogicPuzzle.Core.Clues;
+
 namespace LogicPuzzle.Core
 {
     [ExcludeFromCodeCoverage]
     public sealed class Puzzle : IPuzzle
     {
+        public string Title
+        {
+            get;
+        }
+
+        // ------------------------------------------------
+
+        public IReadOnlyList<IClue> Clues
+        {
+            get;
+        }
+
+        // ------------------------------------------------
+
+        public IReadOnlyList<ICategory> Categories
+        {
+            get;
+        }
+
+        // ------------------------------------------------
+
         public Puzzle(List<ICategory> categories)
         {
             if(categories == null)
@@ -23,13 +46,6 @@ namespace LogicPuzzle.Core
             }
 
             Categories = new List<ICategory>(categories).AsReadOnly();
-        }
-
-        // ------------------------------------------------
-
-        public IReadOnlyList<ICategory> Categories
-        {
-            get;
         }
     }
 }
