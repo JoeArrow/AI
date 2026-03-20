@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LogicPuzzle.Core.Tests/LogicPuzzle.Core.Tests.csproj" Id="eb0fdf8d-8e4e-479b-99c1-38b394b9fa40" />
+  <Project Path="LogicPuzzle.Core/LogicPuzzle.Core.csproj" Id="0be780c0-ee01-4fca-9b16-f63dd80e14cb" />
+</Solution>
