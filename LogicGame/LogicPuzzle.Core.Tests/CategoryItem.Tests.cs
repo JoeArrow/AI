@@ -6,9 +6,10 @@
 //
 #endregion
 
+using LogicPuzzle.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CategoryItem
+namespace CategoryItem.Tests
 {
     // ----------------------------------------------------
     /// <summary>
@@ -16,27 +17,30 @@ namespace CategoryItem
     /// </summary>
 
     [TestClass]
-    public class CategoryItem
+    public class CategoryItemTests
     {
-        public CategoryItem() { }
+        public CategoryItemTests() { }
 
         // ------------------------------------------------
 
         [TestMethod]
-        [DataRow("")]
-        public void Method_Class(string expected)
+        [DataRow("MyTest", "MyTest")]
+        public void ToString_CategoryItem(string input, string expected)
         {
             // -------
             // Arrange
 
-            // ----------
-            // Mock Setup
+            var iut = new LogicPuzzle.Core.CategoryItem(input);
 
             // ---
             // Act
 
+            var res = iut.ToString();
+
             // ------
             // Assert
+
+            Assert.AreEqual(expected, res);
         }
     }
 }

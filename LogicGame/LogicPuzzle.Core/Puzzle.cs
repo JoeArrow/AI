@@ -7,9 +7,11 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LogicPuzzle.Core
 {
+    [ExcludeFromCodeCoverage]
     public sealed class Puzzle
     {
         public List<Category> Categories
