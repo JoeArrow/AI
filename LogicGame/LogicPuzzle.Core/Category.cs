@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace LogicPuzzle.Core
 {
-    public sealed class Category
+    public sealed class Category :ICategory
     {
         public string Name
         {

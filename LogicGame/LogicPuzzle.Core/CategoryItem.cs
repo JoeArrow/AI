@@ -8,7 +8,7 @@
 
 namespace LogicPuzzle.Core
 {
-    public sealed class CategoryItem
+    public sealed class CategoryItem : ICategoryItem
     {
         public string Name
         {
