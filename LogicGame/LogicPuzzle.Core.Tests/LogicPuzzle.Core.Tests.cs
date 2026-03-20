@@ -533,5 +533,548 @@ namespace LogicPuzzle.Core.Tests
                 grid.SetNo(cat1.Name, noPair2[0], cat2.Name, noPair2[1]);
             });
         }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow(2, 2, -1, 0)]
+        [DataRow(2, 2, 2, 0)]
+        [DataRow(2, 2, 0, -1)]
+        [DataRow(2, 2, 0, 2)]
+        public void GetCell_GridMatrix_ThrowsOnInvalidCoordinates(int rowCount, int columnCount, int row, int column)
+        {
+            // -------
+            // Arrange
+
+            var matrix = new GridMatrix(rowCount, columnCount);
+
+            // -------------
+            // Act / Assert
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => matrix.GetCell(row, column));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow(2, 2, -1, 0, CellState.Unknown)]
+        [DataRow(2, 2, 2, 0, CellState.Unknown)]
+        [DataRow(2, 2, 0, -1, CellState.Unknown)]
+        [DataRow(2, 2, 0, 2, CellState.Unknown)]
+        public void SetCell_GridMatrix_ThrowsOnInvalidCoordinates(int rowCount, int columnCount, int row, int column, CellState state)
+        {
+            // -------
+            // Arrange
+
+            var matrix = new GridMatrix(rowCount, columnCount);
+
+            // -------------
+            // Act / Assert
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => matrix.SetCell(row, column, state));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "GhostCategory",
+                 "Alice",
+                 "Pets",
+                 "Cat"
+             )]
+        public void GetState_WorkingGrid_ThrowsOnUnknownFirstCategory(string cat1Json,
+                                                                      string cat2Json,
+                                                                      string badCategoryName,
+                                                                      string item1Name,
+                                                                      string category2Name,
+                                                                      string item2Name)
+        {
+            // -------
+            // Arrange
+
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            // -------------
+            // Act / Assert
+
+            Assert.ThrowsExactly<ArgumentException>( () => grid.GetState(badCategoryName, item1Name, category2Name, item2Name));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "People",
+                 "Alice",
+                 "GhostCategory",
+                 "Cat"
+             )]
+        public void GetState_WorkingGrid_ThrowsOnUnknownSecondCategory(string cat1Json,
+                                                               string cat2Json,
+                                                               string category1Name,
+                                                               string item1Name,
+                                                               string badCategoryName,
+                                                               string item2Name)
+        {
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            Assert.ThrowsExactly<ArgumentException>(() => grid.GetState(category1Name, item1Name, badCategoryName, item2Name));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "People",
+                 "GhostItem",
+                 "Pets",
+                 "Cat"
+             )]
+        public void GetState_WorkingGrid_ThrowsOnUnknownFirstItem(string cat1Json,
+                                                          string cat2Json,
+                                                          string category1Name,
+                                                          string badItemName,
+                                                          string category2Name,
+                                                          string item2Name)
+        {
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            Assert.ThrowsExactly<ArgumentException>(() => grid.GetState(category1Name, badItemName, category2Name, item2Name));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "People",
+                 "Alice",
+                 "Pets",
+                 "GhostItem"
+             )]
+        public void GetState_WorkingGrid_ThrowsOnUnknownSecondItem(string cat1Json,
+                                                           string cat2Json,
+                                                           string category1Name,
+                                                           string item1Name,
+                                                           string category2Name,
+                                                           string badItemName)
+        {
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            Assert.ThrowsExactly<ArgumentException>(() => grid.GetState(category1Name, item1Name, category2Name, badItemName));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", "People", "Alice", "Bob" )]
+        public void GetState_WorkingGrid_ThrowsWhenNoMatrixExistsForSameCategory(string catJson,
+                                                                         string categoryName,
+                                                                         string item1Name,
+                                                                         string item2Name)
+        {
+            // -------
+            // Arrange
+
+            var cat = DeserializeCategory(catJson);
+
+            Assert.IsNotNull(cat);
+
+            var categories = new List<Category> { cat };
+            var grid = new WorkingGrid(categories);
+
+            // -------------
+            // Act / Assert
+
+            Assert.ThrowsExactly<InvalidOperationException>( () => grid.GetState(categoryName, item1Name, categoryName, item2Name));
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "['Alice','Cat']",
+                 "['Alice','Dog']"
+             )]
+        public void SetNo_WorkingGrid_ThrowsWhenRowHasNoPossibleMatch(string cat1Json,
+                                                              string cat2Json,
+                                                              string noPair1Json,
+                                                              string noPair2Json)
+        {
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+            var noPair1 = DeserializeStringArray(noPair1Json);
+            var noPair2 = DeserializeStringArray(noPair2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+            Assert.IsNotNull(noPair1);
+            Assert.IsNotNull(noPair2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                grid.SetNo(cat1.Name, noPair1[0], cat2.Name, noPair1[1]);
+                grid.SetNo(cat1.Name, noPair2[0], cat2.Name, noPair2[1]);
+            });
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 "['Alice','Cat']",
+                 "['Bob','Cat']"
+             )]
+        public void SetNo_WorkingGrid_ThrowsWhenColumnHasNoPossibleMatch(string cat1Json,
+                                                                 string cat2Json,
+                                                                 string noPair1Json,
+                                                                 string noPair2Json)
+        {
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+            var noPair1 = DeserializeStringArray(noPair1Json);
+            var noPair2 = DeserializeStringArray(noPair2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+            Assert.IsNotNull(noPair1);
+            Assert.IsNotNull(noPair2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                grid.SetNo(cat1.Name, noPair1[0], cat2.Name, noPair1[1]);
+                grid.SetNo(cat1.Name, noPair2[0], cat2.Name, noPair2[1]);
+            });
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow( "{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                  0, 0, 0, 1)]
+        public void ValidateMatrixConsistency_WorkingGrid_ThrowsOnRowContradiction(string cat1Json, string cat2Json, int row1, 
+                                                                                   int column1, int row2, int column2)
+        {
+            // -------
+            // Arrange
+
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            var matricesField = typeof(WorkingGrid).GetField("_matrices",
+                                                             System.Reflection.BindingFlags.NonPublic |
+                                                             System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(matricesField);
+
+            var matrices = matricesField.GetValue(grid) as System.Collections.IDictionary;
+
+            Assert.IsNotNull(matrices);
+            Assert.AreEqual(1, matrices.Count);
+
+            GridMatrix matrix = null;
+
+            foreach(System.Collections.DictionaryEntry entry in matrices)
+            {
+                matrix = entry.Value as GridMatrix;
+                break;
+            }
+
+            Assert.IsNotNull(matrix);
+
+            matrix.SetCell(row1, column1, CellState.Yes);
+            matrix.SetCell(row2, column2, CellState.Yes);
+
+            var validateMethod = typeof(WorkingGrid).GetMethod("ValidateMatrixConsistency",
+                                                               System.Reflection.BindingFlags.NonPublic |
+                                                               System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(validateMethod);
+
+            // -------------
+            // Act / Assert
+
+            var exception = Assert.ThrowsExactly<System.Reflection.TargetInvocationException>(
+                () => validateMethod.Invoke(grid, null));
+
+            Assert.IsNotNull(exception.InnerException);
+            Assert.IsInstanceOfType<InvalidOperationException>(exception.InnerException);
+            Assert.AreEqual("Row contradiction in matrix 'People' x 'Pets'.",
+                            exception.InnerException.Message);
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}", "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, 1, 0)]
+        public void ValidateMatrixConsistency_WorkingGrid_ThrowsOnColumnContradiction(string cat1Json, string cat2Json, int row1, 
+                                                                                      int column1, int row2, int column2)
+        {
+            // -------
+            // Arrange
+
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            var matricesField = typeof(WorkingGrid).GetField("_matrices",
+                                                             System.Reflection.BindingFlags.NonPublic |
+                                                             System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(matricesField);
+
+            var matrices = matricesField.GetValue(grid) as System.Collections.IDictionary;
+
+            Assert.IsNotNull(matrices);
+            Assert.AreEqual(1, matrices.Count);
+
+            GridMatrix matrix = null;
+
+            foreach(System.Collections.DictionaryEntry entry in matrices)
+            {
+                matrix = entry.Value as GridMatrix;
+                break;
+            }
+
+            Assert.IsNotNull(matrix);
+
+            matrix.SetCell(row1, column1, CellState.Yes);
+            matrix.SetCell(row2, column2, CellState.Yes);
+
+            var validateMethod = typeof(WorkingGrid).GetMethod("ValidateMatrixConsistency",
+                                                               System.Reflection.BindingFlags.NonPublic |
+                                                               System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(validateMethod);
+
+            // -------------
+            // Act / Assert
+
+            var exception = Assert.ThrowsExactly<System.Reflection.TargetInvocationException>(
+                () => validateMethod.Invoke(grid, null));
+
+            Assert.IsNotNull(exception.InnerException);
+            Assert.IsInstanceOfType<InvalidOperationException>(exception.InnerException);
+            Assert.AreEqual("Column contradiction in matrix 'People' x 'Pets'.", exception.InnerException.Message);
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, CellState.Yes,
+                 0, 1, CellState.Yes,
+                 "Row contradiction in matrix 'People' x 'Pets'.")]
+
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, CellState.Yes,
+                 1, 0, CellState.Yes,
+                 "Column contradiction in matrix 'People' x 'Pets'."
+             )]
+
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, CellState.No,
+                 0, 1, CellState.No,
+                 "Row has no possible match in matrix 'People' x 'Pets'."
+             )]
+
+        [DataRow("{'Name':'People','Items':[{'Name':'Alice'},{'Name':'Bob'}]}",
+                 "{'Name':'Pets','Items':[{'Name':'Cat'},{'Name':'Dog'}]}",
+                 0, 0, CellState.No,
+                 1, 0, CellState.No,
+                 "Column has no possible match in matrix 'People' x 'Pets'."
+             )]
+        public void ValidateMatrixConsistency_WorkingGrid_CatchesInvalidStates(string cat1Json,
+                                                                               string cat2Json,
+                                                                               int row1,
+                                                                               int col1,
+                                                                               CellState state1,
+                                                                               int row2,
+                                                                               int col2,
+                                                                               CellState state2,
+                                                                               string expectedMessage)
+        {
+            // -------
+            // Arrange
+
+            var cat1 = DeserializeCategory(cat1Json);
+            var cat2 = DeserializeCategory(cat2Json);
+
+            Assert.IsNotNull(cat1);
+            Assert.IsNotNull(cat2);
+
+            var categories = new List<Category> { cat1, cat2 };
+            var grid = new WorkingGrid(categories);
+
+            var matrix = GetOnlyMatrix(grid);
+
+            matrix.SetCell(row1, col1, state1);
+            matrix.SetCell(row2, col2, state2);
+
+            // -------------
+            // Act
+
+            var ex = InvokeValidateMatrixConsistency(grid);
+
+            // ------
+            // Assert
+
+            Assert.AreEqual(expectedMessage, ex.Message);
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("People", "Pets", "People", "Pets", true)]
+        [DataRow("People", "Pets", "People", "Colors", false)]
+        [DataRow("People", "Pets", "Colors", "Pets", false)]
+        [DataRow("People", "Pets", "Colors", "Numbers", false)]
+        public void Equals_CategoryPairKey_ReturnsExpectedResultForCategoryPairKey(string firstCategoryName1,
+                                                                                   string secondCategoryName1,
+                                                                                   string firstCategoryName2,
+                                                                                   string secondCategoryName2,
+                                                                                   bool expected)
+        {
+            // -------
+            // Arrange
+
+            var key1 = new CategoryPairKey(firstCategoryName1, secondCategoryName1);
+            var key2 = new CategoryPairKey(firstCategoryName2, secondCategoryName2);
+
+            // ---
+            // Act
+
+            var result = key1.Equals(key2);
+
+            // ------
+            // Assert
+
+            Assert.AreEqual(expected, result);
+        }
+
+        // ------------------------------------------------
+
+        [TestMethod]
+        [DataRow("People", "Pets")]
+        public void Equals_CategoryPairKey_ReturnsFalseForNull(string firstCategoryName,
+                                                       string secondCategoryName)
+        {
+            // -------
+            // Arrange
+
+            var key = new CategoryPairKey(firstCategoryName, secondCategoryName);
+
+            // ---
+            // Act
+
+            var result = key.Equals(null);
+
+            // ------
+            // Assert
+
+            Assert.IsFalse(result);
+        }
+
+        // ------------------------------------------------
+
+        private GridMatrix GetOnlyMatrix(WorkingGrid grid)
+        {
+            var matricesField = typeof(WorkingGrid).GetField("_matrices",
+                                                             System.Reflection.BindingFlags.NonPublic |
+                                                             System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(matricesField);
+
+            var matrices = matricesField.GetValue(grid) as System.Collections.IDictionary;
+
+            Assert.IsNotNull(matrices);
+            Assert.AreEqual(1, matrices.Count);
+
+            foreach(System.Collections.DictionaryEntry entry in matrices)
+            {
+                var matrix = entry.Value as GridMatrix;
+
+                if(matrix != null)
+                {
+                    return matrix;
+                }
+            }
+
+            Assert.Fail("Expected exactly one GridMatrix.");
+            return null;
+        }
+
+        // ------------------------------------------------
+
+        private Exception InvokeValidateMatrixConsistency(WorkingGrid grid)
+        {
+            var validateMethod = typeof(WorkingGrid).GetMethod("ValidateMatrixConsistency",
+                                                               System.Reflection.BindingFlags.NonPublic |
+                                                               System.Reflection.BindingFlags.Instance);
+
+            Assert.IsNotNull(validateMethod);
+
+            var exception = Assert.ThrowsExactly<System.Reflection.TargetInvocationException>(
+                () => validateMethod.Invoke(grid, null));
+
+            Assert.IsNotNull(exception.InnerException);
+
+            return exception.InnerException;
+        }
     }
 }
