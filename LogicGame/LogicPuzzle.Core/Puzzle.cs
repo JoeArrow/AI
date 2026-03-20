@@ -14,12 +14,14 @@ namespace LogicPuzzle.Core
     [ExcludeFromCodeCoverage]
     public sealed class Puzzle : IPuzzle
     {
-        public List<Category> Categories
+        public List<ICategory> Categories
         {
             get;
         }
 
-        public Puzzle(List<Category> categories)
+        // ------------------------------------------------
+
+        public Puzzle(List<ICategory> categories)
         {
             Categories = categories;
         }

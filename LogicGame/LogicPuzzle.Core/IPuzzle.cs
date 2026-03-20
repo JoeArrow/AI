@@ -2,6 +2,6 @@
 {
     public interface IPuzzle
     {
-        List<Category> Categories { get; }
+        List<ICategory> Categories { get; }
     }
 }
