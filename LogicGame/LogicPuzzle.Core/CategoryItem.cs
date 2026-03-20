@@ -12,7 +12,7 @@ namespace LogicPuzzle.Core
     {
         public string Name
         {
-            get;
+            set;  get;
         }
 
         // ------------------------------------------------

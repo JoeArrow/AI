@@ -14,7 +14,7 @@ namespace LogicPuzzle.Core
     {
         public string Name
         {
-            get;
+            set;  get;
         }
 
         public List<CategoryItem> Items

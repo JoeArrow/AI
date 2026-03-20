@@ -7,8 +7,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace LogicPuzzle.Core
 {
@@ -16,8 +16,7 @@ namespace LogicPuzzle.Core
     {
         private readonly Dictionary<string, Category> _categoriesByName;
         private readonly Dictionary<CategoryPairKey, GridMatrix> _matrices;
-
-        // ------------------------------------------------
+        private bool _isPropagating;
 
         public WorkingGrid(List<Category> categories)
         {
@@ -31,15 +30,16 @@ namespace LogicPuzzle.Core
 
         public CellState GetState(string categoryName1, string itemName1, string categoryName2, string itemName2)
         {
-            Category category1 = GetCategory(categoryName1);
-            Category category2 = GetCategory(categoryName2);
+            var category1 = GetCategory(categoryName1);
+            var category2 = GetCategory(categoryName2);
 
-            int itemIndex1 = GetItemIndex(category1, itemName1);
-            int itemIndex2 = GetItemIndex(category2, itemName2);
+            var itemIndex1 = GetItemIndex(category1, itemName1);
+            var itemIndex2 = GetItemIndex(category2, itemName2);
 
-            GridMatrix matrix = GetMatrix(category1.Name, category2.Name);
+            var matrix = GetMatrix(category1.Name, category2.Name);
+            var key = CreateMatrixKey(category1.Name, category2.Name);
 
-            if(category1.Name == CreateMatrixKey(category1.Name, category2.Name).FirstCategoryName)
+            if(category1.Name == key.FirstCategoryName)
             {
                 return matrix.GetCell(itemIndex1, itemIndex2);
             }
@@ -49,31 +49,30 @@ namespace LogicPuzzle.Core
 
         // ------------------------------------------------
 
-        public void SetNo( string categoryName1, string itemName1, string categoryName2, string itemName2)
+        public void SetNo(string categoryName1, string itemName1, string categoryName2, string itemName2)
         {
             SetState(categoryName1, itemName1, categoryName2, itemName2, CellState.No);
         }
 
         // ------------------------------------------------
 
-        public void SetYes( string categoryName1, string itemName1, string categoryName2, string itemName2)
+        public void SetYes(string categoryName1, string itemName1, string categoryName2, string itemName2)
         {
             SetState(categoryName1, itemName1, categoryName2, itemName2, CellState.Yes);
-            ApplyYesConstraints(categoryName1, itemName1, categoryName2, itemName2);
         }
 
         // ------------------------------------------------
 
-        private void SetState( string categoryName1, string itemName1, string categoryName2, string itemName2, CellState newState)
+        private void SetState(string categoryName1, string itemName1, string categoryName2, string itemName2, CellState newState)
         {
-            Category category1 = GetCategory(categoryName1);
-            Category category2 = GetCategory(categoryName2);
+            var category1 = GetCategory(categoryName1);
+            var category2 = GetCategory(categoryName2);
 
-            int itemIndex1 = GetItemIndex(category1, itemName1);
-            int itemIndex2 = GetItemIndex(category2, itemName2);
+            var itemIndex1 = GetItemIndex(category1, itemName1);
+            var itemIndex2 = GetItemIndex(category2, itemName2);
 
-            GridMatrix matrix = GetMatrix(category1.Name, category2.Name);
-            CategoryPairKey key = CreateMatrixKey(category1.Name, category2.Name);
+            var matrix = GetMatrix(category1.Name, category2.Name);
+            var key = CreateMatrixKey(category1.Name, category2.Name);
 
             int rowIndex;
             int columnIndex;
@@ -89,7 +88,7 @@ namespace LogicPuzzle.Core
                 columnIndex = itemIndex1;
             }
 
-            CellState currentState = matrix.GetCell(rowIndex, columnIndex);
+            var currentState = matrix.GetCell(rowIndex, columnIndex);
 
             if(currentState == newState)
             {
@@ -103,17 +102,24 @@ namespace LogicPuzzle.Core
 
             matrix.SetCell(rowIndex, columnIndex, newState);
 
+            ValidateMatrixConsistency();
+
+            if(newState == CellState.Yes)
+            {
+                ApplyYesConstraints(categoryName1, itemName1, categoryName2, itemName2);
+            }
+
             Propagate();
         }
 
         // ------------------------------------------------
 
-        private void ApplyYesConstraints( string categoryName1, string itemName1, string categoryName2, string itemName2)
+        private void ApplyYesConstraints(string categoryName1, string itemName1, string categoryName2, string itemName2)
         {
-            Category category1 = GetCategory(categoryName1);
-            Category category2 = GetCategory(categoryName2);
+            var category1 = GetCategory(categoryName1);
+            var category2 = GetCategory(categoryName2);
 
-            foreach(CategoryItem otherItem in category2.Items)
+            foreach(var otherItem in category2.Items)
             {
                 if(otherItem.Name != itemName2)
                 {
@@ -121,7 +127,7 @@ namespace LogicPuzzle.Core
                 }
             }
 
-            foreach(CategoryItem otherItem in category1.Items)
+            foreach(var otherItem in category1.Items)
             {
                 if(otherItem.Name != itemName1)
                 {
@@ -132,22 +138,294 @@ namespace LogicPuzzle.Core
 
         // ------------------------------------------------
 
+        private void Propagate()
+        {
+            if(_isPropagating == true)
+            {
+                return;
+            }
+
+            _isPropagating = true;
+
+            try
+            {
+                bool changed;
+
+                do
+                {
+                    changed = false;
+
+                    if(ApplySinglePossibilityRule() == true)
+                    {
+                        changed = true;
+                    }
+
+                    if(ApplyCrossCategoryPropagationRule() == true)
+                    {
+                        changed = true;
+                    }
+
+                    if(ApplyCrossCategoryNegativePropagationRule() == true)
+                    {
+                        changed = true;
+                    }
+
+                    ValidateMatrixConsistency();
+                }
+                while(changed == true);
+            }
+            finally
+            {
+                _isPropagating = false;
+            }
+        }
+
+        // ------------------------------------------------
+
+        private bool ApplySinglePossibilityRule()
+        {
+            foreach(var entry in _matrices)
+            {
+                var key = entry.Key;
+                var matrix = entry.Value;
+
+                for(int row = 0; row < matrix.RowCount; row++)
+                {
+                    var unknownCount = 0;
+                    var lastUnknownColumn = -1;
+                    var hasYes = false;
+
+                    for(int column = 0; column < matrix.ColumnCount; column++)
+                    {
+                        var state = matrix.GetCell(row, column);
+
+                        if(state == CellState.Yes)
+                        {
+                            hasYes = true;
+                            break;
+                        }
+
+                        if(state == CellState.Unknown)
+                        {
+                            unknownCount++;
+                            lastUnknownColumn = column;
+                        }
+                    }
+
+                    if(hasYes == false && unknownCount == 1)
+                    {
+                        var firstCategory = GetCategory(key.FirstCategoryName);
+                        var secondCategory = GetCategory(key.SecondCategoryName);
+
+                        var itemName1 = firstCategory.Items[row].Name;
+                        var itemName2 = secondCategory.Items[lastUnknownColumn].Name;
+
+                        SetYes(firstCategory.Name, itemName1, secondCategory.Name, itemName2);
+                        return true;
+                    }
+                }
+
+                for(int column = 0; column < matrix.ColumnCount; column++)
+                {
+                    var unknownCount = 0;
+                    var lastUnknownRow = -1;
+                    var hasYes = false;
+
+                    for(int row = 0; row < matrix.RowCount; row++)
+                    {
+                        var state = matrix.GetCell(row, column);
+
+                        if(state == CellState.Yes)
+                        {
+                            hasYes = true;
+                            break;
+                        }
+
+                        if(state == CellState.Unknown)
+                        {
+                            unknownCount++;
+                            lastUnknownRow = row;
+                        }
+                    }
+
+                    if(hasYes == false && unknownCount == 1)
+                    {
+                        var firstCategory = GetCategory(key.FirstCategoryName);
+                        var secondCategory = GetCategory(key.SecondCategoryName);
+
+                        var itemName1 = firstCategory.Items[lastUnknownRow].Name;
+                        var itemName2 = secondCategory.Items[column].Name;
+
+                        SetYes(firstCategory.Name, itemName1, secondCategory.Name, itemName2);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // ------------------------------------------------
+
+        private bool ApplyCrossCategoryPropagationRule()
+        {
+            foreach(var sourceCategory in _categoriesByName.Values)
+            {
+                foreach(var bridgeCategory in _categoriesByName.Values)
+                {
+                    foreach(var targetCategory in _categoriesByName.Values)
+                    {
+                        if(sourceCategory.Name == bridgeCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        if(sourceCategory.Name == targetCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        if(bridgeCategory.Name == targetCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        foreach(var sourceItem in sourceCategory.Items)
+                        {
+                            foreach(var bridgeItem in bridgeCategory.Items)
+                            {
+                                if(GetState(sourceCategory.Name, sourceItem.Name, bridgeCategory.Name, bridgeItem.Name) != CellState.Yes)
+                                {
+                                    continue;
+                                }
+
+                                foreach(var targetItem in targetCategory.Items)
+                                {
+                                    if(GetState(bridgeCategory.Name, bridgeItem.Name, targetCategory.Name, targetItem.Name) != CellState.Yes)
+                                    {
+                                        continue;
+                                    }
+
+                                    if(GetState(sourceCategory.Name, sourceItem.Name, targetCategory.Name, targetItem.Name) == CellState.Unknown)
+                                    {
+                                        SetYes(sourceCategory.Name, sourceItem.Name, targetCategory.Name, targetItem.Name);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // ------------------------------------------------
+
+        private bool ApplyCrossCategoryNegativePropagationRule()
+        {
+            foreach(var sourceCategory in _categoriesByName.Values)
+            {
+                foreach(var bridgeCategory in _categoriesByName.Values)
+                {
+                    foreach(var targetCategory in _categoriesByName.Values)
+                    {
+                        if(sourceCategory.Name == bridgeCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        if(sourceCategory.Name == targetCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        if(bridgeCategory.Name == targetCategory.Name)
+                        {
+                            continue;
+                        }
+
+                        foreach(var sourceItem in sourceCategory.Items)
+                        {
+                            foreach(var bridgeItem in bridgeCategory.Items)
+                            {
+                                var sourceBridgeState = GetState(
+                                    sourceCategory.Name,
+                                    sourceItem.Name,
+                                    bridgeCategory.Name,
+                                    bridgeItem.Name);
+
+                                foreach(var targetItem in targetCategory.Items)
+                                {
+                                    var bridgeTargetState = GetState(
+                                        bridgeCategory.Name,
+                                        bridgeItem.Name,
+                                        targetCategory.Name,
+                                        targetItem.Name);
+
+                                    var sourceTargetState = GetState(
+                                        sourceCategory.Name,
+                                        sourceItem.Name,
+                                        targetCategory.Name,
+                                        targetItem.Name);
+
+                                    if(sourceTargetState != CellState.Unknown)
+                                    {
+                                        continue;
+                                    }
+
+                                    // --------------------------
+                                    // A = B and B != C => A != C
+
+                                    if(sourceBridgeState == CellState.Yes && bridgeTargetState == CellState.No)
+                                    {
+                                        SetNo(
+                                            sourceCategory.Name,
+                                            sourceItem.Name,
+                                            targetCategory.Name,
+                                            targetItem.Name);
+
+                                        return true;
+                                    }
+
+                                    // --------------------------
+                                    // A != B and B = C => A != C
+
+                                    if(sourceBridgeState == CellState.No && bridgeTargetState == CellState.Yes)
+                                    {
+                                        SetNo(
+                                            sourceCategory.Name,
+                                            sourceItem.Name,
+                                            targetCategory.Name,
+                                            targetItem.Name);
+
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // ------------------------------------------------
+
         private void InitializeMatrices(List<Category> categories)
         {
             for(int i = 0; i < categories.Count; i++)
             {
                 for(int j = i + 1; j < categories.Count; j++)
                 {
-                    Category firstCategory = categories[i];
-                    Category secondCategory = categories[j];
+                    var firstCategory = categories[i];
+                    var secondCategory = categories[j];
 
-                    CategoryPairKey key = new CategoryPairKey(
-                        firstCategory.Name,
-                        secondCategory.Name);
+                    var key = new CategoryPairKey(firstCategory.Name, secondCategory.Name);
 
-                    _matrices[key] = new GridMatrix(
-                        firstCategory.Items.Count,
-                        secondCategory.Items.Count);
+                    _matrices[key] = new GridMatrix(firstCategory.Items.Count, secondCategory.Items.Count);
                 }
             }
         }
@@ -156,11 +434,9 @@ namespace LogicPuzzle.Core
 
         private Category GetCategory(string categoryName)
         {
-            if(_categoriesByName.TryGetValue(categoryName, out Category category) == false)
+            if(_categoriesByName.TryGetValue(categoryName, out var category) == false)
             {
-                throw new ArgumentException(
-                    $"Unknown category: {categoryName}",
-                    nameof(categoryName));
+                throw new ArgumentException($"Unknown category: {categoryName}", nameof(categoryName));
             }
 
             return category;
@@ -178,21 +454,18 @@ namespace LogicPuzzle.Core
                 }
             }
 
-            throw new ArgumentException(
-                $"Unknown item '{itemName}' in category '{category.Name}'.",
-                nameof(itemName));
+            throw new ArgumentException($"Unknown item '{itemName}' in category '{category.Name}'.", nameof(itemName));
         }
 
         // ------------------------------------------------
 
         private GridMatrix GetMatrix(string categoryName1, string categoryName2)
         {
-            CategoryPairKey key = CreateMatrixKey(categoryName1, categoryName2);
+            var key = CreateMatrixKey(categoryName1, categoryName2);
 
-            if(_matrices.TryGetValue(key, out GridMatrix matrix) == false)
+            if(_matrices.TryGetValue(key, out var matrix) == false)
             {
-                throw new InvalidOperationException(
-                    $"No matrix exists for '{categoryName1}' and '{categoryName2}'.");
+                throw new InvalidOperationException($"No matrix exists for '{categoryName1}' and '{categoryName2}'.");
             }
 
             return matrix;
@@ -207,108 +480,79 @@ namespace LogicPuzzle.Core
 
         // ------------------------------------------------
 
-        private void Propagate()
+        private void ValidateMatrixConsistency()
         {
-            bool changed;
-
-            do
+            foreach(var entry in _matrices)
             {
-                changed = ApplySinglePossibilityRule();
-            }
-            while(changed);
-        }
-
-        // ------------------------------------------------
-
-        private bool ApplySinglePossibilityRule()
-        {
-            bool anyChange = false;
-
-            foreach(KeyValuePair<CategoryPairKey, GridMatrix> entry in _matrices)
-            {
-                GridMatrix matrix = entry.Value;
-
-                // ----------
-                // Check rows
+                var key = entry.Key;
+                var matrix = entry.Value;
 
                 for(int row = 0; row < matrix.RowCount; row++)
                 {
-                    int unknownCount = 0;
-                    int lastUnknownColumn = -1;
+                    var yesCount = 0;
+                    var unknownCount = 0;
 
                     for(int column = 0; column < matrix.ColumnCount; column++)
                     {
-                        CellState state = matrix.GetCell(row, column);
+                        var state = matrix.GetCell(row, column);
+
+                        if(state == CellState.Yes)
+                        {
+                            yesCount++;
+                        }
 
                         if(state == CellState.Unknown)
                         {
                             unknownCount++;
-                            lastUnknownColumn = column;
-                        }
-
-                        if(state == CellState.Yes)
-                        {
-                            unknownCount = 0;
-                            break;
                         }
                     }
 
-                    if(unknownCount == 1)
+                    if(yesCount > 1)
                     {
-                        matrix.SetCell(row, lastUnknownColumn, CellState.Yes);
-                        ApplyYesFromMatrix(entry.Key, row, lastUnknownColumn);
-                        anyChange = true;
+                        throw new InvalidOperationException(
+                            $"Row contradiction in matrix '{key.FirstCategoryName}' x '{key.SecondCategoryName}'.");
+                    }
+
+                    if(yesCount == 0 && unknownCount == 0)
+                    {
+                        throw new InvalidOperationException(
+                            $"Row has no possible match in matrix '{key.FirstCategoryName}' x '{key.SecondCategoryName}'.");
                     }
                 }
-
-                // -------------
-                // Check columns
 
                 for(int column = 0; column < matrix.ColumnCount; column++)
                 {
-                    int unknownCount = 0;
-                    int lastUnknownRow = -1;
+                    var yesCount = 0;
+                    var unknownCount = 0;
 
                     for(int row = 0; row < matrix.RowCount; row++)
                     {
-                        CellState state = matrix.GetCell(row, column);
+                        var state = matrix.GetCell(row, column);
+
+                        if(state == CellState.Yes)
+                        {
+                            yesCount++;
+                        }
 
                         if(state == CellState.Unknown)
                         {
                             unknownCount++;
-                            lastUnknownRow = row;
-                        }
-
-                        if(state == CellState.Yes)
-                        {
-                            unknownCount = 0;
-                            break;
                         }
                     }
 
-                    if(unknownCount == 1)
+                    if(yesCount > 1)
                     {
-                        matrix.SetCell(lastUnknownRow, column, CellState.Yes);
-                        ApplyYesFromMatrix(entry.Key, lastUnknownRow, column);
-                        anyChange = true;
+                        throw new InvalidOperationException(
+                            $"Column contradiction in matrix '{key.FirstCategoryName}' x '{key.SecondCategoryName}'.");
+                    }
+
+                    if(yesCount == 0 && unknownCount == 0)
+                    {
+                        throw new InvalidOperationException(
+                            $"Column has no possible match in matrix '{key.FirstCategoryName}' x '{key.SecondCategoryName}'.");
                     }
                 }
             }
-
-            return anyChange;
-        }
-
-        // ------------------------------------------------
-
-        private void ApplyYesFromMatrix(CategoryPairKey key, int row, int column)
-        {
-            Category firstCategory = GetCategory(key.FirstCategoryName);
-            Category secondCategory = GetCategory(key.SecondCategoryName);
-
-            string item1 = firstCategory.Items[row].Name;
-            string item2 = secondCategory.Items[column].Name;
-
-            ApplyYesConstraints(firstCategory.Name, item1, secondCategory.Name, item2);
         }
     }
 }
