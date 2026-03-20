@@ -2,6 +2,6 @@
 {
     public interface IPuzzle
     {
-        List<ICategory> Categories { get; }
+        IReadOnlyList<ICategory> Categories { get; }
     }
 }

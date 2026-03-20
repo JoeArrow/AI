@@ -6,6 +6,7 @@
 //
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -14,16 +15,21 @@ namespace LogicPuzzle.Core
     [ExcludeFromCodeCoverage]
     public sealed class Puzzle : IPuzzle
     {
-        public List<ICategory> Categories
+        public Puzzle(List<ICategory> categories)
         {
-            get;
+            if(categories == null)
+            {
+                throw new ArgumentNullException(nameof(categories));
+            }
+
+            Categories = new List<ICategory>(categories).AsReadOnly();
         }
 
         // ------------------------------------------------
 
-        public Puzzle(List<ICategory> categories)
+        public IReadOnlyList<ICategory> Categories
         {
-            Categories = categories;
+            get;
         }
     }
 }
